@@ -95,7 +95,7 @@ class DoClusters():
         
         return best_scores, self.best_knee
     
-    def display(self):
+    def display_score(self):
         fig, ax = plt.subplots(2,2)
         ax[0,0].plot(np.arange(self.kmin, self.kmax), self.inert_, '-o')
         ax[0,0].set_title("Inertia Score")
@@ -133,8 +133,9 @@ def main():
     # and the no of clusters to perform clustering according the opt.t mode:
     # drop NaN or impute data
     model_ = DoClusters(X=df, n_clusters=opts.n, mode=opts.t)    # you might let the user choose the n_clusters
-    tmp = model_.do_clusters()
-    tmp2 = model_.get_score_n_knees()
+    model_obj = model_.do_clusters()
+    best_scores, best_knee = model_.get_score_n_knees()
+    print(best_scores, best_knee)
     model_.write_label_to_csv()
 
 
