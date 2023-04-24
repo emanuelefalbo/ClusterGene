@@ -92,10 +92,10 @@ Therefore, context-specific cell lines must be extracted beforehand.</p>
 </section>
 <section id="submission-in-local">
 <h2>Submission in Local<a class="headerlink" href="#submission-in-local" title="Permalink to this heading"></a></h2>
-<ol class="arabic simple">
-<li><p>The submission of a EnGene in local can be executed as follows: ::
-python EnGene.py input_file.csv -m  impute -n 10 -t centroids</p></li>
-</ol>
+<p>The submission of a EnGene in local can be executed as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">EnGene</span><span class="o">.</span><span class="n">py</span> <span class="n">input_file</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">m</span>  <span class="n">impute</span> <span class="o">-</span><span class="n">n</span> <span class="mi">10</span> <span class="o">-</span><span class="n">t</span> <span class="n">centroids</span>
+</pre></div>
+</div>
 <p>The positional argument, i.e input file, is mandatory, while a series of options can be given for the analysis. The help message shows how to run the program:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>home:$ python EnGene.py -h
 usage: EnGene.py [-h] [-m {drop,impute}] [-n N]

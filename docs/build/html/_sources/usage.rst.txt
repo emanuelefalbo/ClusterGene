@@ -18,8 +18,9 @@ The input file for EnGene is file.csv (or tsv) containing CRISPR scores from kno
 Submission in Local 
 ###################
 
-#. The submission of a EnGene in local can be executed as follows: ::
-   python EnGene.py input_file.csv -m  impute -n 10 -t centroids 
+The submission of a EnGene in local can be executed as follows: ::
+
+    python EnGene.py input_file.csv -m  impute -n 10 -t centroids 
 
 The positional argument, i.e input file, is mandatory, while a series of options can be given for the analysis. The help message shows how to run the program: ::
 
