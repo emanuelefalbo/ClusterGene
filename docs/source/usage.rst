@@ -50,7 +50,7 @@ The positional argument, i.e input file, is mandatory, while a series of options
      -  choose between KMeans and K-Medoid clustering algorithms
  
 
-The EnGene software returns as main output a **output_file.csv** containing the label for each class computed by the chosen algorithm.
+The EnGene software returns as main output a **output_file.csv** containing the label for each gene, computed by the chosen algorithm.
 
 Submission in Batch
 ###################
