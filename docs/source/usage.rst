@@ -6,14 +6,14 @@ This session gives suggestions about setting up an input file for the execution 
 Input Data
 ##########
 
-The input file for EnGene is file.csv (or tsv) containing CRISPR scores from knockout screens from project Achilles, as well as genomic characterization data from the CCLE project. For eample, this can be download from  `<DepMap portal https://depmap.org/portal/download/all/>`_ . 
+The input file for EnGene is file.csv (or tsv) containing CRISPR scores from knockout screens from project Achilles, as well as genomic characterization data from the CCLE project. For eample, this can be download from  `DepMap portal <https://depmap.org/portal/download/all/>`_ . 
 
 .. note::
     The file CRISPRGeneEffect.csv contains the knockout screens scores for all tissue cell lines.
     Therefore, context-specific cell lines must be extracted beforehand. 
 
 .. warning::
-    Continuous updates are added to the portal, thus, it always suggested to employ the latest data set. 
+    Continuous updates are added to the portal, thus, it is always suggested to employ the latest data set. 
 
 Submission in Local 
 ###################
