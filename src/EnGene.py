@@ -20,11 +20,14 @@ plt.rcParams['figure.figsize'] = [12, 6]
 def cml_parser():
     parser = argparse.ArgumentParser('EnGene.py', formatter_class=argparse.RawDescriptionHelpFormatter)
     # parser.add_argument('option_file', nargs="?", help="json option file")
-    parser.add_argument('filename', nargs="?",  help="input file")
+    # parser.add_argument('filename', nargs="?",  help="input file")
+    requiredNamed = parser.add_argument_group('required named arguments')
+    requiredNamed.add_argument('-i', '--input', help='Input file CRISPR-Caa9 matrix', required=True)
+    requiredNamed.add_argument('-ref', '--reference', help='Input reference file name', required=True)
+    # parser.parse_args(['-h'])
     parser.add_argument('-m', default="impute", choices=["drop", "impute"], help="choose to drop Nan or impute")
     parser.add_argument('-n', default=10, type=int, help="Number of clusters for  clustering algorithms")
     parser.add_argument('-t', default="medoids", choices=["centroids", "medoids", "both"], help="choose between KMeans and K-medoids clustering algorithms or both")
-
     opts = parser.parse_args()
     if opts.filename == None:
         raise FileNotFoundError('Missing input file or None')
@@ -62,7 +65,6 @@ class DoClusters():
         self.index = X.index      # Get index of DF
 
     def do_clusters(self):
-
         # if self.mode == "both":
         if self.mode == "centroids":
             print(f"Clustering by KMeans .... ")
@@ -78,7 +80,6 @@ class DoClusters():
         self.silho_ = [ silhouette_score(self.X, self.model[k].labels_) for k in range(len(self.model))]
         self.ch_ = [  calinski_harabasz_score(self.X, self.model[k].labels_) for k in range(len(self.model))]
         self.db_ = [  davies_bouldin_score(self.X, self.model[k].labels_) for k in range(len(self.model))]
-        
         # Find best no cluster from the 3 out 4 tests:
         # if NaN present round the mean of knee locators of each score
         x = range(self.kmin, self.kmax)
@@ -88,7 +89,6 @@ class DoClusters():
                 best_scores.append(KneeLocator(x, score, curve="convex", direction="decreasing").knee)
             elif idx == 1 or idx == 3:
                 best_scores.append(KneeLocator(x, score, curve="concave", direction="increasing").knee)
-
         best_scores = np.array(best_scores, dtype=float)
         best_scores = best_scores[~np.isnan(best_scores)]   # Remove NaN
         self.best_knee = int(np.round(best_scores.mean()))
@@ -117,26 +117,62 @@ class DoClusters():
         labels.to_csv("Labels_from_clustering.csv")
 
 
+def annote(target_file, ref_file, tissue):
+    # df_cl = pd.read_csv(ref_file)
+    # df_map = pd.read_csv(target_file, index_col=0)
+    if df_map.shape[0] > df_map.shape[1]:  # Reverse order : (Rows x Colums) = (Gene x Cell Lines) 
+        df_map = df_map.T
+    depmap_id = target_file["depmapId"]
+    lineage_1 = target_file["lineage1"]
+    lineage_1_unique = list(set(lineage_1))
+    if tissue in lineage_1:
+        try:
+            id_tissue = lineage_1[lineage_1 == tissue].index
+        except ValueError:
+            print(f'{tissue} not present in lineage1 \n')
+            print(f'select from the following list {lineage_1_unique} \n')
+    name_cl = depmap_id[id_tissue].to_list()
+    #Parse DepMap to select above cell lines 
+    id_true = []
+    count = 0
+    for k, var in enumerate(df_map.columns):
+        if var in name_cl:
+            id_true.append(k)
+            count +=1
+    df_tissue = df_map.iloc[:, id_true]
+    df_tissue = df_tissue.add_prefix(f'{tissue} ')
+    
+    return df_tissue
+
+
 def main():
     opts = cml_parser()
     sep = None
     if opts.filename[-3:] == "tsv":
         sep == "\t"
-    df = pd.read_csv(opts.filename, sep=sep, engine="python")
+    df_map = pd.read_csv(opts.filename, sep=sep, engine="python")
+    df_cl = pd.read_csv(opts.ref_file, sep=sep, engine="python")
     # Drop Nan or Impute data
     if opts.m == "drop":
-        df = drop_na(df)
+        df_map = drop_na(df_map)
     elif opts.m == "impute":
-        df = impute_data(df)
-        
+        df_map = impute_data(df_map)
+
+    # Select no of Cell lines for specific tissue
+    df_tissue = annote(df_map, df_cl, 'Kidney') 
+    print(df_tissue.shape)
+
+    
     # DoClusters class takes X(n_sample, n_features) DataFrame
     # and the no of clusters to perform clustering according the opt.t mode:
     # drop NaN or impute data
-    model_ = DoClusters(X=df, n_clusters=opts.n, mode=opts.t)    # you might let the user choose the n_clusters
-    model_obj = model_.do_clusters()
-    best_scores, best_knee = model_.get_score_n_knees()
-    print(best_scores, best_knee)
-    model_.write_label_to_csv()
+    # model_ = DoClusters(X=df, n_clusters=opts.n, mode=opts.t)    # you might let the user choose the n_clusters
+    # model_obj = model_.do_clusters()
+    # best_scores, best_knee = model_.get_score_n_knees()
+    # print(best_scores, best_knee)
+    # model_.write_label_to_csv()
+
+    
 
 
 
