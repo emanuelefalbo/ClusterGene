@@ -13,7 +13,7 @@ The input file for EnGene is file.csv (or tsv) containing CRISPR scores from kno
     Therefore, context-specific cell lines must be extracted beforehand. 
 
 .. warning::
-    Continuous updates are added to the portal, thus, it always suggested to employ the latest data set. 
+    Continuous updates are added to the portal, thus, it is always suggested to employ the latest data set. 
 
 Submission in Local 
 ###################
