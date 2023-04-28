@@ -32,6 +32,7 @@ def cml_parser():
     requiredNamed.add_argument('-i', '--input', help='Input file CRISPR-Cas9 matrix', required=True)
     requiredNamed.add_argument('-ref', '--reference', help='Input reference file name', required=True)
     requiredNamed.add_argument('-t', '--tissue', help='Input tissue to be parsed', required=True)
+    parser.add_argument('-o', '--output', default="label_output", help="name output file")
     parser.add_argument('-m', default="impute", choices=["drop", "impute"], help="choose to drop Nan or impute")
     parser.add_argument('-n', default=10, type=int, help="Number of clusters for  clustering algorithms")
     parser.add_argument('-k', default="centroids", choices=["centroids", "medoids", "both"], help="choose between KMeans and K-medoids clustering algorithms or both")
@@ -125,17 +126,18 @@ class DoClusters():
         plt.tight_layout()
         plt.savefig('Model_Scores.png', dpi=100,  bbox_inches='tight', pad_inches=0.1)
     
-    def write_label_to_csv(self):
+    def write_label_to_csv(self, nameout):
+        fout = nameout + ".csv"
         # write the labels to CSV file
         if len(self.model) > 1:
             for idx, var in enumerate(self.model):
                     if var.get_params()["n_clusters"] == self.best_knee:
                         labels = pd.Series(var.labels_, index=self.index)
                         break
-            labels.to_csv("Labels_from_clustering.csv")
+            labels.to_csv(fout)
         else:
             labels = pd.Series(self.model[0].labels_, index=self.index)
-        labels.to_csv("Labels_from_clustering.csv")
+        labels.to_csv(fout)
 
 
 def annote(df_map, df_cl, tissue):
@@ -183,7 +185,7 @@ def main():
     clusters_ = DoClusters(X=df_tissue, n_clusters=opts.n, mode=opts.k) 
     model = clusters_.do_clusters()
     best_scores, best_knee = clusters_.get_score_n_knees()
-    clusters_.write_label_to_csv()
+    clusters_.write_label_to_csv(opts.output)
     # print(best_scores, best_knee)
 
 
