@@ -130,11 +130,11 @@ class DoClusters():
         if len(self.model) > 1:
             for idx, var in enumerate(self.model):
                     if var.get_params()["n_clusters"] == self.best_knee:
-                        labels = pd.Series(var.labels_, index=self.index, columns=["Gene", "Label"])
+                        labels = pd.Series(var.labels_, index=self.index)
                         break
             labels.to_csv(fout)
         else:
-            labels = pd.Series(self.model[0].labels_, index=self.index, columns=["Gene", "Label"])
+            labels = pd.Series(self.model[0].labels_, index=self.index)
         labels.to_csv(fout)
         return labels
 
