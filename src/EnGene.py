@@ -14,12 +14,10 @@ from sklearn.decomposition import PCA
 # from sklearn.model_selection import train_test_split
 import argparse
 # import lightgbm as lgbm
-
-plt.rcParams['figure.figsize'] = [12, 6]
-
-
 import warnings
 warnings.filterwarnings('ignore')
+
+plt.rcParams['figure.figsize'] = [12, 6]
 
 def range1(start, end):
     return range(start, end+1)
@@ -146,6 +144,7 @@ def annote(df_map, df_cl, tissue):
     lineage_1 = df_cl["lineage1"]
     lineage_1_unique = list(set(lineage_1))
     if tissue in lineage_1_unique:
+        print(f' Selecting {tissue} from the DepMap full matrix ... ')
         id_tissue = lineage_1[lineage_1 == tissue].index
         name_cl = depmap_id[id_tissue].to_list()
         #Parse DepMap to select above cell lines 
@@ -199,8 +198,6 @@ def main():
     model = clusters_.do_clusters()
     best_scores, best_knee = clusters_.get_score_n_knees()
     labels = clusters_.labels_to_csv(opts.output)
-    print(best_scores, best_knee)
-    print(len(labels))
     # clusters_.plot_score()
 
 
