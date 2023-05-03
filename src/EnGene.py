@@ -163,6 +163,18 @@ def annote(df_map, df_cl, tissue):
         print(f' Select from the following list: \n')
         print(f' {msg} \n')
 
+# def do_PCA(X, labels):
+#     X = X.to_numpy()
+#     pca_ = PCA(n_components=90)
+#     pca_.fit(X)
+#     X_pca = pca_.fit_transform(X)
+#     print(f' ... Performing PCA analysis for n_component for 90% of variance')
+#     print(f' explained variance ratio == {pca_.explained_variance_ratio_}')
+#     count, unique = np.unique(labels)
+    # fig = plt.figure()
+    # for i, j in zip(count, u_labels):
+    #     plt.scatter(X_pca[labels == i, 0], X_pca[labels == i, 1]  edgecolors='k', label= f"Cluster {i} : {j} ")
+
 
 def main():
     opts = cml_parser()
