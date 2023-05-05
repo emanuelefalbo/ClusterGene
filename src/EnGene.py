@@ -29,7 +29,7 @@ def cml_parser():
     requiredNamed = parser.add_argument_group('required named arguments')
     requiredNamed.add_argument('-i', '--input', help='Input file CRISPR-Cas9 matrix', required=True)
     requiredNamed.add_argument('-ref', '--reference', help='Input reference file name', required=True)
-    requiredNamed.add_argument('-t', '--tissue', help='Input tissue to be parsed', required=True)
+    requiredNamed.add_argument('-t', '--tissue', help='Input tissue to be parsed; all cell lines are employed if == all', required=True)
     parser.add_argument('-o', '--output', default="label_output", help="name output file")
     parser.add_argument('-m', default="impute", choices=["drop", "impute"], help="choose to drop Nan or impute")
     parser.add_argument('-n', default=2, type=int, help="Number of clusters for  clustering algorithms")
@@ -184,19 +184,25 @@ def main():
     df_cl = pd.read_csv(opts.reference, sep=sep, engine="python")
     if df_map.shape[0] < df_map.shape[1]:  # Reverse order : (Rows x Colums) = (Gene x Cell Lines) 
         df_map = df_map.T
-    # Select no of Cell lines for specific tissue
-    df_tissue = annote(df_map, df_cl, opts.tissue) 
+    # Select no of Cell lines for specific tissue or keep'em all
+    if opts.tissue != "all":
+        df_tissue = annote(df_map, df_cl, opts.tissue) 
+    else:
+        df_tissue = df_map
+    print(df_tissue.shape)
+    
+    
     # # Drop Nan or Impute data
-    if opts.m == "drop":
-        df_tissue = drop_na(df_tissue)
-    elif opts.m == "impute":
-        df_tissue = impute_data(df_tissue)
-    # DoClusters class takes X(n_sample, n_features) DataFrame and the no of clusters
-    # to perform clustering according the opt.k mode
-    clusters_ = DoClusters(X=df_tissue, n_clusters=opts.n, mode=opts.k) 
-    model = clusters_.do_clusters()
-    best_scores, best_knee = clusters_.get_score_n_knees()
-    labels = clusters_.labels_to_csv(opts.output)
+    # if opts.m == "drop":
+    #     df_tissue = drop_na(df_tissue)
+    # elif opts.m == "impute":
+    #     df_tissue = impute_data(df_tissue)
+    # # DoClusters class takes X(n_sample, n_features) DataFrame and the no of clusters
+    # # to perform clustering according the opt.k mode
+    # clusters_ = DoClusters(X=df_tissue, n_clusters=opts.n, mode=opts.k) 
+    # model = clusters_.do_clusters()
+    # best_scores, best_knee = clusters_.get_score_n_knees()
+    # labels = clusters_.labels_to_csv(opts.output)
     # clusters_.plot_score()
 
 
