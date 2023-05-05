@@ -185,24 +185,21 @@ def main():
     if df_map.shape[0] < df_map.shape[1]:  # Reverse order : (Rows x Colums) = (Gene x Cell Lines) 
         df_map = df_map.T
     # Select no of Cell lines for specific tissue or keep'em all
-    if opts.tissue != "all":
-        df_tissue = annote(df_map, df_cl, opts.tissue) 
-    else:
+    if opts.tissue == "all":
         df_tissue = df_map
-    print(df_tissue.shape)
-    
-    
+    else:
+        df_tissue = annote(df_map, df_cl, opts.tissue) 
     # # Drop Nan or Impute data
-    # if opts.m == "drop":
-    #     df_tissue = drop_na(df_tissue)
-    # elif opts.m == "impute":
-    #     df_tissue = impute_data(df_tissue)
-    # # DoClusters class takes X(n_sample, n_features) DataFrame and the no of clusters
-    # # to perform clustering according the opt.k mode
-    # clusters_ = DoClusters(X=df_tissue, n_clusters=opts.n, mode=opts.k) 
-    # model = clusters_.do_clusters()
-    # best_scores, best_knee = clusters_.get_score_n_knees()
-    # labels = clusters_.labels_to_csv(opts.output)
+    if opts.m == "drop":
+        df_tissue = drop_na(df_tissue)
+    elif opts.m == "impute":
+        df_tissue = impute_data(df_tissue)
+    # DoClusters class takes X(n_sample, n_features) DataFrame and the no of clusters
+    # to perform clustering according the opt.k mode
+    clusters_ = DoClusters(X=df_tissue, n_clusters=opts.n, mode=opts.k) 
+    model = clusters_.do_clusters()
+    best_scores, best_knee = clusters_.get_score_n_knees()
+    labels = clusters_.labels_to_csv(opts.output)
     # clusters_.plot_score()
 
 
