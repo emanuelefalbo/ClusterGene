@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -180,8 +181,10 @@ def main():
     sep = None
     if opts.input[-3:] == "tsv":
         sep == "\t"
-    df_map = pd.read_csv(opts.input, sep=sep, engine="python", index_col=0)
-    df_cl = pd.read_csv(opts.reference, sep=sep, engine="python")
+        df_map = pd.read_csv(opts.input, sep=sep, engine="python", index_col=0)
+        df_cl = pd.read_csv(opts.reference, sep=sep, engine="python")
+    elif opts.input[-3:] == "txt":
+        df_map = pd.read_table(opts.input, engine="python", index_col=0)
     if df_map.shape[0] < df_map.shape[1]:  # Reverse order : (Rows x Colums) = (Gene x Cell Lines) 
         df_map = df_map.T
     # Select no of Cell lines for specific tissue or keep'em all
@@ -196,10 +199,14 @@ def main():
         df_tissue = impute_data(df_tissue)
     # DoClusters class takes X(n_sample, n_features) DataFrame and the no of clusters
     # to perform clustering according the opt.k mode
+    st = time.time()
     clusters_ = DoClusters(X=df_tissue, n_clusters=opts.n, mode=opts.k) 
     model = clusters_.do_clusters()
     best_scores, best_knee = clusters_.get_score_n_knees()
     labels = clusters_.labels_to_csv(opts.output)
+    et = time.time()
+    elapsed_time = et - st
+    print(f" Execution time to do clustering and analysis :  {elapsed_time:.2f} seconds")
     # clusters_.plot_score()
 
 
