@@ -42,6 +42,22 @@ def cml_parser():
          raise FileNotFoundError('Missing reference input file or None')
     return  opts
 
+def read_input(opts):
+    sep = None
+    if opts.input[-3:] == "tsv":
+        sep == "\t"
+        df_map = pd.read_csv(opts.input, sep=sep, engine="python", index_col=0)
+        df_cl = pd.read_csv(opts.reference, sep=sep, engine="python")
+    elif opts.input[-3:] == "csv":
+        sep == ","
+        df_map = pd.read_csv(opts.input, sep=sep, engine="python", index_col=0)
+        df_cl = pd.read_csv(opts.reference, sep=sep, engine="python")
+    elif opts.input[-3:] == "txt":
+        df_map = pd.read_table(opts.input, engine="python", index_col=0)
+    if df_map.shape[0] < df_map.shape[1]:  # Reverse order : (Rows x Colums) = (Gene x Cell Lines) 
+        df_map = df_map.T
+    return df_map, df_cl
+
 def drop_na(df):
     print(f" If existing missing values: dropping NaN ...")
     columns_Nans = df.columns[df.isna().any()].to_list()
@@ -178,15 +194,7 @@ def annote(df_map, df_cl, tissue):
 
 def main():
     opts = cml_parser()
-    sep = None
-    if opts.input[-3:] == "tsv":
-        sep == "\t"
-        df_map = pd.read_csv(opts.input, sep=sep, engine="python", index_col=0)
-        df_cl = pd.read_csv(opts.reference, sep=sep, engine="python")
-    elif opts.input[-3:] == "txt":
-        df_map = pd.read_table(opts.input, engine="python", index_col=0)
-    if df_map.shape[0] < df_map.shape[1]:  # Reverse order : (Rows x Colums) = (Gene x Cell Lines) 
-        df_map = df_map.T
+    df_map, df_cl = read_input(opts)
     # Select no of Cell lines for specific tissue or keep'em all
     if opts.tissue == "all":
         df_tissue = df_map
