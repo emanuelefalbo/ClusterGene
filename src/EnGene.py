@@ -97,7 +97,7 @@ class DoClusters():
         # if self.mode == "both":
         if self.mode == "centroids":
             print(f" Clustering by KMeans .... ")
-            self.model = [ KMeans(k, n_init=10).fit(self.X) for k in range1(self.kmin, self.kmax) ]
+            self.model = [ KMeans(k, n_init=10, random_state=42).fit(self.X) for k in range1(self.kmin, self.kmax) ]
         elif self.mode == "medoids":
             print(f" Clustering by K-medoids .... ")
             self.model = [ KMedoids(k).fit(self.X) for k in range1(self.kmin, self.kmax) ]
