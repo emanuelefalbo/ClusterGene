@@ -11,7 +11,7 @@ Welcome to EnGene software documentation!
    :caption: Contents:
 
    intro.rst
-   requirements.rst
+   setup.rst
    usage.rst
 
 

@@ -1,5 +1,21 @@
-Requirements
+Installation
 ============
+
+The EnGene software can be directly download from the `GitHub page <https://github.com/emanuelefalbo/EnGene>`_ by using the git. The following steps briefly guides you to the use of git: for furher information follow `this link <https://www.atlassian.com/git>`_ .   
+
+**1.** If you're using the https option, you can copy the EnGene version from the GitHub page to your local path: ::
+
+    git clone https://github.com/emanuelefalbo/EnGene.git 
+
+
+.. note::
+    Cloning with SSH can be done if a SSH protected-key has been added to your GitHub profile. 
+
+Done! You have the current version of EnGene downloaded locally.
+
+
+Requirements
+############
 
 The EnGene software runs with the python3 language. The following packages are required for the correct behaviour of EnGene: 
 

@@ -6,7 +6,7 @@ This session gives suggestions about setting up an input file for the execution 
 Input Data
 ##########
 
-The input file for EnGene is file.csv (or tsv) containing CRISPR scores from knockout screens from project Achilles, as well as genomic characterization data from the CCLE project. For eample, this can be download from  `DepMap portal <https://depmap.org/portal/download/all/>`_ . 
+The input files for EnGene are file.csv (tsv or txt) containing CRISPR scores from knockout screens from project Achilles, reference selector cell lines, as well as genomic characterization data from the CCLE project. Tthese can be download from  `DepMap portal <https://depmap.org/portal/download/all/>`_ . 
 
 .. note::
     The file CRISPRGeneEffect.csv contains the knockout screens scores for all tissue cell lines.
@@ -18,40 +18,78 @@ The input file for EnGene is file.csv (or tsv) containing CRISPR scores from kno
 Submission in Local 
 ###################
 
-The submission of a EnGene in local can be executed as follows: ::
+For example, the submission of a EnGene requires two input files and the tissue(s) to be investigated. For example, it can be executed in local as follows: ::
 
-    python EnGene.py input_file.csv -m  impute -n 10 -t centroids 
+    python EnGene.py -i CRISPRGeneEffect.csv -ref cell-line-selector.csv -t Bone -m impute -n 2 -k centroids -o output_bone 
 
-The positional argument, i.e input file, is mandatory, while a series of options can be given for the analysis. The help message shows how to run the program: ::
+where the **CRISPRGeneEffect.csv** containes the CRISPR-Cas9 scores, while **cell-line-selector.csv** the cell lines corresponding to the lineages/tissues chosen. The EnGene software returns as main output a **output_bone.csv** file containing the label for each gene of the chosen tissue(s), computed by the chosen algorithm. EnGene searches for the cell lines in the CRISPRGeneEffect.csv by matching them with those from the selected tissue(s) form cell-line-selector.csv file. 
+
+.. note::
+    Currently, only one or all tissues can be selected, if **all** string is given to **-t** all cell lines are employed. 
+    In future, multiple choices will be added.
+
+The possible tissues to be selected are 
+
+.. hlist::
+   :columns: 6
+
+   * Thyroid
+   * Ampulla of Vater 
+   * Cervix 
+   * Bone 
+   * Pleura 
+   * Liver 
+   * Biliary Tract 
+   * Bowel 
+   * Normal 
+   * Breast 
+   * Esophagus/Stomach 
+   * Unknown 
+   * Uterus 
+   * Fibroblast 
+   * Peripheral Nervous System 
+   * Other 
+   * Prostate 
+   * Myeloid 
+   * Testis 
+   * Adrenal Gland 
+   * Head and Neck 
+   * Ovary/Fallopian Tube 
+   * Soft Tissue 
+   * Lymphoid 
+   * Bladder/Urinary Tract 
+   * Skin 
+   * Vulva/Vagina 
+   * Eye 
+   * Pancreas 
+   * Kidney 
+   * Lung 
+   * CNS/Brain
+
+
+The help message of python is self-explanatory: ::
 
    home:$ python EnGene.py -h  
-   usage: EnGene.py [-h] [-m {drop,impute}] [-n N]
-                    [-t {centroids,medoids,both}]
-                    [filename]
-   
-   positional arguments:
-     filename              input file
+   usage: EnGene.py [-h] -i INPUT -ref REFERENCE -t TISSUE [-o OUTPUT] [-m {drop,impute}] [-n N] [-k {centroids,medoids,both}]
    
    optional arguments:
      -h, --help            show this help message and exit
+     -o OUTPUT, --output OUTPUT
+                           name output file
      -m {drop,impute}      choose to drop Nan or impute
      -n N                  Number of clusters for clustering algorithms
-     -t {centroids,medoids,both}
-                           choose between KMeans and K-medoids clustering
-                           algorithms or both
+     -k {centroids,medoids,both}
+                           choose between KMeans and K-medoids clustering algorithms or both
+   
+   required named arguments:
+     -i INPUT, --input INPUT
+                           Input file CRISPR-Cas9 matrix
+     -ref REFERENCE, --reference REFERENCE
+                           Input reference file name
+     -t TISSUE, --tissue TISSUE
+                           Input tissue to be parsed; all cell lines are employed if == all
 
-.. list-table:: 
-   :widths: 25 50 
 
-   * - -m
-     -  choose to drop NaN or imputed data with k-nearest neighbours algorithm
-   * - -n
-     -  choose to the number of clusters to be tested
-   * - -t
-     -  choose between KMeans and K-Medoid clustering algorithms
- 
-
-The EnGene software returns as main output a **output_file.csv** containing the label for each gene, computed by the chosen algorithm.
 
 Submission in Batch
 ###################
@@ -72,7 +110,7 @@ For instance, the submission in batch can be performed with the following templa
    #SBATCH --output=test%j.log
    #
    #SRC=EnGene.py
-   #JOB=input.csv
+   #ARG1=
    ## Command(s) to run (example):
-   # python $SRC $JOB
+   # python $SRC -i $ARG1 -ref $ARG2 -
    

@@ -159,21 +159,22 @@ def annote(df_map, df_cl, tissue):
     depmap_id = df_cl["depmapId"]
     lineage_1 = df_cl["lineage1"]
     lineage_1_unique = list(set(lineage_1))
-    if tissue in lineage_1_unique:
-        print(f' Selecting {tissue} from the DepMap full matrix ... ')
-        id_tissue = lineage_1[lineage_1 == tissue].index
-        name_cl = depmap_id[id_tissue].to_list()
-        #Parse DepMap to select above cell lines 
-        id_true = []
-        count = 0
-        for k, var in enumerate(df_map.columns):
-            if var in name_cl:
-                id_true.append(k)
-                count +=1
-        df_tissue = df_map.iloc[:, id_true]
-        df_tissue = df_tissue.add_prefix(f'{tissue} ')
-        return df_tissue
-    else:
+    try:
+        if tissue in lineage_1_unique:
+            print(f' Selecting {tissue} from the DepMap full matrix ... ')
+            id_tissue = lineage_1[lineage_1 == tissue].index
+            name_cl = depmap_id[id_tissue].to_list()
+            #Parse DepMap to select above cell lines 
+            id_true = []
+            count = 0
+            for k, var in enumerate(df_map.columns):
+                if var in name_cl:
+                    id_true.append(k)
+                    count +=1
+            df_tissue = df_map.iloc[:, id_true]
+            df_tissue = df_tissue.add_prefix(f'{tissue} ')
+            return df_tissue
+    except:
         msg = ' \n'.join(lineage_1_unique)
         print(f' {tissue} not present in lineage1 \n')
         print(f' Select from the following list: \n')

@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="Python" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Introduction to EnGene &mdash; EnGene 0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,12 +13,11 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Get Started with EnGene" href="usage.html" />
+    <link rel="next" title="Requirements" href="requirements.html" />
     <link rel="prev" title="Welcome to EnGene software documentation!" href="index.html" /> 
 </head>
 
@@ -28,15 +26,11 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            EnGene
+            <a href="index.html" class="icon icon-home"> EnGene
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -48,6 +42,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#theoretical-background">Theoretical Background</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Get Started with EnGene</a></li>
 </ul>
 
@@ -64,8 +59,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Introduction to EnGene</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Introduction to EnGene</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/intro.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -75,11 +70,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="introduction-to-engene">
-<h1>Introduction to EnGene<a class="headerlink" href="#introduction-to-engene" title="Permalink to this heading"></a></h1>
+  <div class="section" id="introduction-to-engene">
+<h1>Introduction to EnGene<a class="headerlink" href="#introduction-to-engene" title="Permalink to this headline"></a></h1>
 <p>This is a manual for the EnGene software which is currently employed to analyse omics data, i.e. gene scores,  from distributed database</p>
-<section id="theoretical-background">
-<h2>Theoretical Background<a class="headerlink" href="#theoretical-background" title="Permalink to this heading"></a></h2>
+<div class="section" id="theoretical-background">
+<h2>Theoretical Background<a class="headerlink" href="#theoretical-background" title="Permalink to this headline"></a></h2>
 <p>When analysing data from CRISPR-Cas9 screens in functional and translational studies another major computational problem is to classify and distinguish genetic dependencies involved in normal essential biological processes from disease- and genomic-context-specific vulnerabilities. Identifying context-specific essential genes, and distinguishing them from constitutively essential genes shared across all tissues and cells, i.e. core-fitness genes (CFGs), is also crucial for elucidating the mechanisms involved in tissue-specific diseases. In this prospective, focusing on very well-defined genomic contexts in tumours allows identifying cancer synthetic lethalities that could be exploited therapeutically.</p>
 <p>Gene dependency profiles, generated via pooled CRISPR-Cas9 screening across large panels of human cancer cell lines, are becoming increasingly available. However, identifying and discriminating CFGs and context-specific essential genes from this type of functional genetics screens remains not trivial.
 To this end, we present the EnGene software that aims to the solve the essential gene(EG) classification by performing the following four tasks:</p>
@@ -89,15 +84,15 @@ To this end, we present the EnGene software that aims to the solve the essential
 <li><p>Class labeling: Determine labels of EG according both supervised and unspervised learning approaches.</p></li>
 <li><p>Model classification: Train a supervised algorithm for EG classification</p></li>
 </ol>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to EnGene software documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="usage.html" class="btn btn-neutral float-right" title="Get Started with EnGene" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="requirements.html" class="btn btn-neutral float-right" title="Requirements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

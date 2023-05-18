@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="Python" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Get Started with EnGene &mdash; EnGene 0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,12 +13,11 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Introduction to EnGene" href="intro.html" /> 
+    <link rel="prev" title="Installation" href="setup.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,15 +25,11 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            EnGene
+            <a href="index.html" class="icon icon-home"> EnGene
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -44,6 +38,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction to EnGene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Get Started with EnGene</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#input-data">Input Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submission-in-local">Submission in Local</a></li>
@@ -65,8 +60,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Get Started with EnGene</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Get Started with EnGene</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -76,12 +71,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="get-started-with-engene">
-<h1>Get Started with EnGene<a class="headerlink" href="#get-started-with-engene" title="Permalink to this heading"></a></h1>
+  <div class="section" id="get-started-with-engene">
+<h1>Get Started with EnGene<a class="headerlink" href="#get-started-with-engene" title="Permalink to this headline"></a></h1>
 <p>This session gives suggestions about setting up an input file for the execution of EnGene.</p>
-<section id="input-data">
-<h2>Input Data<a class="headerlink" href="#input-data" title="Permalink to this heading"></a></h2>
-<p>The input file for EnGene is file.csv (or tsv) containing CRISPR scores from knockout screens from project Achilles, as well as genomic characterization data from the CCLE project. For eample, this can be download from  <a class="reference external" href="https://depmap.org/portal/download/all/">DepMap portal</a> .</p>
+<div class="section" id="input-data">
+<h2>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h2>
+<p>The input files for EnGene are file.csv (tsv or txt) containing CRISPR scores from knockout screens from project Achilles, reference selector cell lines, as well as genomic characterization data from the CCLE project. Tthese can be download from  <a class="reference external" href="https://depmap.org/portal/download/all/">DepMap portal</a> .</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The file CRISPRGeneEffect.csv contains the knockout screens scores for all tissue cell lines.
@@ -91,52 +86,90 @@ Therefore, context-specific cell lines must be extracted beforehand.</p>
 <p class="admonition-title">Warning</p>
 <p>Continuous updates are added to the portal, thus, it is always suggested to employ the latest data set.</p>
 </div>
-</section>
-<section id="submission-in-local">
-<h2>Submission in Local<a class="headerlink" href="#submission-in-local" title="Permalink to this heading"></a></h2>
-<p>The submission of a EnGene in local can be executed as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">EnGene</span><span class="o">.</span><span class="n">py</span> <span class="n">input_file</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">m</span>  <span class="n">impute</span> <span class="o">-</span><span class="n">n</span> <span class="mi">10</span> <span class="o">-</span><span class="n">t</span> <span class="n">centroids</span>
+</div>
+<div class="section" id="submission-in-local">
+<h2>Submission in Local<a class="headerlink" href="#submission-in-local" title="Permalink to this headline"></a></h2>
+<p>For example, the submission of a EnGene requires two input files and the tissue(s) to be investigated. For example, it can be executed in local as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">EnGene</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">i</span> <span class="n">CRISPRGeneEffect</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">ref</span> <span class="n">cell</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">selector</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">t</span> <span class="n">Bone</span> <span class="o">-</span><span class="n">m</span> <span class="n">impute</span> <span class="o">-</span><span class="n">n</span> <span class="mi">2</span> <span class="o">-</span><span class="n">k</span> <span class="n">centroids</span> <span class="o">-</span><span class="n">o</span> <span class="n">output_bone</span>
 </pre></div>
 </div>
-<p>The positional argument, i.e input file, is mandatory, while a series of options can be given for the analysis. The help message shows how to run the program:</p>
+<p>where the <strong>CRISPRGeneEffect.csv</strong> containes the CRISPR-Cas9 scores, while <strong>cell-line-selector.csv</strong> the cell lines corresponding to the lineages/tissues chosen. The EnGene software returns as main output a <strong>output_bone.csv</strong> file containing the label for each gene of the chosen tissue(s), computed by the chosen algorithm. EnGene searches for the cell lines in the CRISPRGeneEffect.csv by matching them with those from the selected tissue(s) form cell-line-selector.csv file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, only one or all tissues can be selected, if <strong>all</strong> string is given to <strong>-t</strong> all cell lines are employed.
+In future, multiple choices will be added.</p>
+</div>
+<p>The possible tissues to be selected are</p>
+<table class="hlist"><tr><td><ul class="simple">
+<li><p>Thyroid</p></li>
+<li><p>Ampulla of Vater</p></li>
+<li><p>Cervix</p></li>
+<li><p>Bone</p></li>
+<li><p>Pleura</p></li>
+<li><p>Liver</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>Biliary Tract</p></li>
+<li><p>Bowel</p></li>
+<li><p>Normal</p></li>
+<li><p>Breast</p></li>
+<li><p>Esophagus/Stomach</p></li>
+<li><p>Unknown</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>Uterus</p></li>
+<li><p>Fibroblast</p></li>
+<li><p>Peripheral Nervous System</p></li>
+<li><p>Other</p></li>
+<li><p>Prostate</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>Myeloid</p></li>
+<li><p>Testis</p></li>
+<li><p>Adrenal Gland</p></li>
+<li><p>Head and Neck</p></li>
+<li><p>Ovary/Fallopian Tube</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>Soft Tissue</p></li>
+<li><p>Lymphoid</p></li>
+<li><p>Bladder/Urinary Tract</p></li>
+<li><p>Skin</p></li>
+<li><p>Vulva/Vagina</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>Eye</p></li>
+<li><p>Pancreas</p></li>
+<li><p>Kidney</p></li>
+<li><p>Lung</p></li>
+<li><p>CNS/Brain</p></li>
+</ul>
+</td></tr></table>
+<p>The help message of python is self-explanatory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>home:$ python EnGene.py -h
-usage: EnGene.py [-h] [-m {drop,impute}] [-n N]
-                 [-t {centroids,medoids,both}]
-                 [filename]
-
-positional arguments:
-  filename              input file
+usage: EnGene.py [-h] -i INPUT -ref REFERENCE -t TISSUE [-o OUTPUT] [-m {drop,impute}] [-n N] [-k {centroids,medoids,both}]
 
 optional arguments:
   -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        name output file
   -m {drop,impute}      choose to drop Nan or impute
   -n N                  Number of clusters for clustering algorithms
-  -t {centroids,medoids,both}
-                        choose between KMeans and K-medoids clustering
-                        algorithms or both
+  -k {centroids,medoids,both}
+                        choose between KMeans and K-medoids clustering algorithms or both
+
+required named arguments:
+  -i INPUT, --input INPUT
+                        Input file CRISPR-Cas9 matrix
+  -ref REFERENCE, --reference REFERENCE
+                        Input reference file name
+  -t TISSUE, --tissue TISSUE
+                        Input tissue to be parsed; all cell lines are employed if == all
 </pre></div>
 </div>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 67%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p>-m</p></td>
-<td><p>choose to drop NaN or imputed data with k-nearest neighbours algorithm</p></td>
-</tr>
-<tr class="row-even"><td><p>-n</p></td>
-<td><p>choose to the number of clusters to be tested</p></td>
-</tr>
-<tr class="row-odd"><td><p>-t</p></td>
-<td><p>choose between KMeans and K-Medoid clustering algorithms</p></td>
-</tr>
-</tbody>
-</table>
-<p>The EnGene software returns as main output a <strong>output_file.csv</strong> containing the label for each gene, computed by the chosen algorithm.</p>
-</section>
-<section id="submission-in-batch">
-<h2>Submission in Batch<a class="headerlink" href="#submission-in-batch" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="submission-in-batch">
+<h2>Submission in Batch<a class="headerlink" href="#submission-in-batch" title="Permalink to this headline"></a></h2>
 <p>For instance, the submission in batch can be performed with the following template script for SLURM-managed HPC:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 <span class="c1"># Job name:</span>
@@ -151,19 +184,19 @@ optional arguments:
 <span class="c1">#SBATCH --output=test%j.log</span>
 <span class="c1">#</span>
 <span class="c1">#SRC=EnGene.py</span>
-<span class="c1">#JOB=input.csv</span>
+<span class="c1">#ARG1=</span>
 <span class="c1">## Command(s) to run (example):</span>
-<span class="c1"># python $SRC $JOB</span>
+<span class="c1"># python $SRC -i $ARG1 -ref $ARG2 -</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="intro.html" class="btn btn-neutral float-left" title="Introduction to EnGene" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="setup.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
