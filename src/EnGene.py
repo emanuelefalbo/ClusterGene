@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import time
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -30,7 +31,7 @@ def cml_parser():
     requiredNamed = parser.add_argument_group('required named arguments')
     requiredNamed.add_argument('-i', '--input', help='Input file CRISPR-Cas9 matrix', required=True)
     requiredNamed.add_argument('-ref', '--reference', help='Input reference file name', required=True)
-    requiredNamed.add_argument('-t', '--tissue', help='Input tissue to be parsed; all cell lines are employed if == all', required=True)
+    requiredNamed.add_argument('-t', '--tissue',default='all', help='Input tissue to be parsed; all cell lines are employed if == all', required=True)
     parser.add_argument('-o', '--output', default="label_output", help="name output file")
     parser.add_argument('-m', default="impute", choices=["drop", "impute"], help="choose to drop Nan or impute")
     parser.add_argument('-n', default=2, type=int, help="Number of clusters for  clustering algorithms")
@@ -159,26 +160,28 @@ def annote(df_map, df_cl, tissue):
     depmap_id = df_cl["depmapId"]
     lineage_1 = df_cl["lineage1"]
     lineage_1_unique = list(set(lineage_1))
-    try:
-        if tissue in lineage_1_unique:
-            print(f' Selecting {tissue} from the DepMap full matrix ... ')
-            id_tissue = lineage_1[lineage_1 == tissue].index
-            name_cl = depmap_id[id_tissue].to_list()
-            #Parse DepMap to select above cell lines 
-            id_true = []
-            count = 0
-            for k, var in enumerate(df_map.columns):
-                if var in name_cl:
-                    id_true.append(k)
-                    count +=1
-            df_tissue = df_map.iloc[:, id_true]
-            df_tissue = df_tissue.add_prefix(f'{tissue} ')
-            return df_tissue
-    except:
-        msg = ' \n'.join(lineage_1_unique)
+    # print(lineage_1_unique)
+    if tissue in lineage_1_unique:
+        print(f' Selecting {tissue} from the DepMap full matrix ... ')
+        id_tissue = lineage_1[lineage_1 == tissue].index
+        name_cl = depmap_id[id_tissue].to_list()
+        #Parse DepMap to select above cell lines 
+        id_true = []
+        count = 0
+        for k, var in enumerate(df_map.columns):
+            if var in name_cl:
+                id_true.append(k)
+                count +=1
+        df_tissue = df_map.iloc[:, id_true]
+        df_tissue = df_tissue.add_prefix(f'{tissue} ')
+        print(df_tissue)
+        return df_tissue
+    else:   
+        msg = ' \n '.join(lineage_1_unique)
         print(f' {tissue} not present in lineage1 \n')
         print(f' Select from the following list: \n')
         print(f' {msg} \n')
+        sys.exit()
 
 # def do_PCA(X, labels):
 #     X = X.to_numpy()
@@ -198,10 +201,12 @@ def main():
     df_map, df_cl = read_input(opts)
     # Select no of Cell lines for specific tissue or keep'em all
     if opts.tissue == "all":
-        df_tissue = df_map
-    else:
+        df_tissue = df_map.copy()
+    elif opts.tissue != 'all':
         df_tissue = annote(df_map, df_cl, opts.tissue) 
+        print(df_tissue.shape, df_map.shape)
     # # Drop Nan or Impute data
+    print(opts.tissue)
     if opts.m == "drop":
         df_tissue = drop_na(df_tissue)
     elif opts.m == "impute":
