@@ -2,6 +2,7 @@
 
 import time
 import sys
+from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -15,6 +16,7 @@ from sklearn.decomposition import PCA
 # from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
 # from sklearn.model_selection import train_test_split
 import argparse
+import os
 # import lightgbm as lgbm
 import warnings
 warnings.filterwarnings('ignore')
@@ -32,16 +34,29 @@ def cml_parser():
     requiredNamed.add_argument('-i', '--input', help='Input file CRISPR-Cas9 matrix', required=True)
     requiredNamed.add_argument('-ref', '--reference', help='Input reference file name', required=True)
     requiredNamed.add_argument('-t', '--tissue',default='all', help='Input tissue to be parsed; all cell lines are employed if == all', required=True)
-    parser.add_argument('-o', '--output', default="label_output", help="name output file")
+    parser.add_argument('-o', '--output', default="output", help="name output file")
     parser.add_argument('-m', default="impute", choices=["drop", "impute"], help="choose to drop Nan or impute")
     parser.add_argument('-n', default=2, type=int, help="Number of clusters for  clustering algorithms")
     parser.add_argument('-k', default="centroids", choices=["centroids", "medoids", "both"], help="choose between KMeans and K-medoids clustering algorithms or both")
     opts = parser.parse_args()
     if opts.input == None:
         raise FileNotFoundError('Missing CRISPR-Cas9 input file or None')
-    elif opts.reference == None:
-         raise FileNotFoundError('Missing reference input file or None')
+    # elif opts.reference == None:
+    #      raise FileNotFoundError('Missing reference input file or None')
     return  opts
+
+
+def remove_string(df):
+    index = df.index.tolist()
+    idx = []
+    for i in index:
+        if i.split()[1][0] == '(':
+           idx.append(i.split('(', 1)[0].strip())
+    # idx = [ i.split('(', 1)[0].strip() for i in index]
+    df.reset_index(drop=True)
+    df_mod = pd.DataFrame(df.to_numpy(), index=idx, columns=df.columns)
+    
+    return df_mod
 
 def read_input(opts):
     sep = None
@@ -57,7 +72,8 @@ def read_input(opts):
         df_map = pd.read_table(opts.input, engine="python", index_col=0)
     if df_map.shape[0] < df_map.shape[1]:  # Reverse order : (Rows x Colums) = (Gene x Cell Lines) 
         df_map = df_map.T
-    return df_map, df_cl
+    df_mod = remove_string(df_map)  
+    return df_mod ,df_cl
 
 def drop_na(df):
     print(f" If existing missing values: dropping NaN ...")
@@ -70,7 +86,7 @@ def drop_na(df):
 
 def impute_data(df):
     # Imputing data by means of K-Nearest Neighbours algo
-    print(f" if existing missing values: Imputing data ...")
+    print(f" if existing missing values: KNN-imputing data ...")
     knn_imputer = KNNImputer(missing_values=np.nan, n_neighbors=5, weights='uniform', metric='nan_euclidean')
     df_knn = df.copy()
     columns_Nans = df_knn.columns[df_knn.isna().any()].to_list()
@@ -97,10 +113,8 @@ class DoClusters():
     def do_clusters(self):
         # if self.mode == "both":
         if self.mode == "centroids":
-            print(f" Clustering by KMeans .... ")
             self.model = [ KMeans(k, n_init=10, random_state=42).fit(self.X) for k in range1(self.kmin, self.kmax) ]
         elif self.mode == "medoids":
-            print(f" Clustering by K-medoids .... ")
             self.model = [ KMedoids(k).fit(self.X) for k in range1(self.kmin, self.kmax) ]
         return self.model
 
@@ -142,6 +156,7 @@ class DoClusters():
         plt.savefig('Model_Scores.png', dpi=100,  bbox_inches='tight', pad_inches=0.1)
     
     def labels_to_csv(self, nameout):
+        nameout =  nameout.replace('/', '_')
         fout = nameout + ".csv"
         # write the labels to CSV file
         if len(self.model) > 1:
@@ -149,9 +164,11 @@ class DoClusters():
                     if var.get_params()["n_clusters"] == self.best_knee:
                         labels = pd.Series(var.labels_, index=self.index)
                         break
+            # labels.rename(columns={'0':'label'})
             labels.to_csv(fout)
         else:
             labels = pd.Series(self.model[0].labels_, index=self.index)
+            # labels.rename(columns={'0':'label'})
         labels.to_csv(fout)
         return labels
 
@@ -183,6 +200,64 @@ def annote(df_map, df_cl, tissue):
         print(f' {msg} \n')
         sys.exit()
 
+
+def ClusterByTissues(df, df_cl, opts):
+    # Function to perform Otsu on more tissues
+    # tissue = opts.tissue
+    msg = """ Tissue  |  No. Cell lines
+--------------------------
+    """
+    depmap_id = df_cl["depmapId"]
+    lineage_1 = df_cl["lineage1"]
+    lineage_1_unique = list(set(lineage_1))
+    # lineage_1_unique = [ var.replace('/', '_') for var in lineage_1_unique]
+    # lineage_1_unique = [ var.replace(' ', '_') for var in lineage_1_unique]
+    print('\n'.join(var for var in lineage_1_unique))
+    sum_shape = 0
+    print(msg)
+    for tissue in lineage_1_unique:
+    # for tissue in  list_tissues:
+        id_tissue = lineage_1[lineage_1 == tissue].index
+        name_cl = depmap_id[id_tissue].tolist()
+        id_true = []    
+        for k, var in enumerate(df.columns):
+            if var in name_cl:
+                id_true.append(k)
+        df_tissue = df.iloc[:, id_true]
+        sum_shape += df_tissue.shape[1]
+        print(f'{tissue} == {df_tissue.shape[1]}')
+        if df_tissue.shape[1] != 0:
+            clusters_ = DoClusters(X=df_tissue, n_clusters=opts.n, mode=opts.k) 
+            model = clusters_.do_clusters()
+            # best_scores, best_knee = clusters_.get_score_n_knees()
+            fout = f'clusters_{tissue}'
+            labels = clusters_.labels_to_csv(fout)
+    # check if dimensions are correct
+    # if sum_shape != df.shape[1]:
+    #     print("The summed lenght of cell lines subsets is not equal to the original no of cell lines !")
+    # print(df.shape, sum_shape)
+    
+def get_csEG(file1, file2, opts):
+    # Get common EG from mode of mode
+    df = pd.read_csv(file1, index_col=0)
+    cEG = df.index[df['label'] == '1'].tolist()
+    # cEG = dfout.index[dfout['label'] == 'E'].tolist()
+    cEG_set = set(cEG)
+    # print(cEG_set)
+    # print('Counts from All Tissues:\n')
+    # print(dfout.value_counts())
+    
+    # Get context-specific EG from selected tissue
+    df_t = pd.read_csv(file2, index_col=0)
+    tEG = df_t.index[df_t['label'] == '1'].tolist()
+    tEG_set = set(tEG)
+    # print('Counts from Selected Tissue:\n')
+    # print(df_t.value_counts())
+    fout = f'csEG_{opts.tissue}.csv'
+    csEG = list(cEG_set- tEG_set)
+    pd.Series(csEG).to_csv(fout, index=False)
+    
+
 # def do_PCA(X, labels):
 #     X = X.to_numpy()
 #     pca_ = PCA(n_components=90)
@@ -196,32 +271,68 @@ def annote(df_map, df_cl, tissue):
     #     plt.scatter(X_pca[labels == i, 0], X_pca[labels == i, 1]  edgecolors='k', label= f"Cluster {i} : {j} ")
 
 
+def get_csEG(file1, file2, opts):
+    # Get common EG from mode of mode
+    df = pd.read_csv(file1, index_col=0)
+    cEG = df.index[df['0'] == 1].tolist()
+    # cEG = dfout.index[dfout['label'] == 'E'].tolist()
+    cEG_set = set(cEG)
+    # print(cEG_set)
+    # print('Counts from All Tissues:\n')
+    # print(dfout.value_counts())
+    
+    # Get context-specific EG from selected tissue
+    df_t = pd.read_csv(file2, index_col=0)
+    tEG = df_t.index[df_t['0'] == 1].tolist()
+    tEG_set = set(tEG)
+    # print('Counts from Selected Tissue:\n')
+    # print(df_t.value_counts())
+    fout = f'csEG_{opts.tissue}.csv'
+    csEG = list(cEG_set- tEG_set)
+    pd.Series(csEG).to_csv(fout, index=False)
+
+
 def main():
     opts = cml_parser()
-    df_map, df_cl = read_input(opts)
-    # Select no of Cell lines for specific tissue or keep'em all
-    if opts.tissue == "all":
-        df_tissue = df_map.copy()
-    elif opts.tissue != 'all':
-        df_tissue = annote(df_map, df_cl, opts.tissue) 
-        print(df_tissue.shape, df_map.shape)
-    # # Drop Nan or Impute data
-    print(opts.tissue)
-    if opts.m == "drop":
-        df_tissue = drop_na(df_tissue)
-    elif opts.m == "impute":
-        df_tissue = impute_data(df_tissue)
-    # DoClusters class takes X(n_sample, n_features) DataFrame and the no of clusters
-    # to perform clustering according the opt.k mode
-    st = time.time()
-    clusters_ = DoClusters(X=df_tissue, n_clusters=opts.n, mode=opts.k) 
-    model = clusters_.do_clusters()
-    best_scores, best_knee = clusters_.get_score_n_knees()
-    labels = clusters_.labels_to_csv(opts.output)
-    et = time.time()
-    elapsed_time = et - st
-    print(f" Execution time to do clustering and analysis :  {elapsed_time:.2f} seconds")
-    # clusters_.plot_score()
+    f1 = 'Clusters_AllTissues_DepMap.csv'
+    f2 = f'clusters_{opts.tissue}.csv'
+    # Get csEGs if files already exist
+    if os.path.exists(f1) and os.path.exists(f2):
+        get_csEG(f1, f2, opts)
+    else:
+        df_map, df_cl = read_input(opts)
+        
+        # Drop Nan or KNN Impute data
+        if opts.m == "drop":
+            df_map = drop_na(df_map)
+        elif opts.m == "impute":
+            df_map = impute_data(df_map)
+        
+        # DoClusters class takes X(n_sample, n_features) DataFrame to clustering
+        # full DepMap matrix
+        print(f'Computing common Essential Genes (EG): full DpMap')
+        st = time.time()
+        clusters_all_ = DoClusters(X=df_map, n_clusters=opts.n, mode=opts.k) 
+        model_all = clusters_all_.do_clusters()
+        # best_scores, best_knee = clusters_.get_score_n_knees()
+        clusters_all_.labels_to_csv("Clusters_AllTissues_DepMap")
+        et = time.time()
+        elapsed_time = et - st
+        print(f" Execution time to clustering Fully DepMap :  {elapsed_time:.2f} seconds")
+        # clusters_.plot_score()
+        
+        # Performing Clustering on specific tissues:
+        print(f'Computing common Essential Genes (EG): tissue DepMap')
+        st = time.time()
+        ClusterByTissues(df_map, df_cl, opts)
+        et = time.time()
+        elapsed_time = et - st
+        print(f" Execution time to clustering Fully DepMap :  {elapsed_time:.2f} seconds")
+        
+        # Computing context-specific EG (csEGs)
+        get_csEG(f1, f2, opts)
+    
+    
 
 
 
