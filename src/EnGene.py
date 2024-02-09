@@ -12,12 +12,9 @@ from sklearn.cluster import KMeans
 from sklearn_extra.cluster import KMedoids
 from kneed import KneeLocator
 from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bouldin_score
-from sklearn.decomposition import PCA
-# from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
-# from sklearn.model_selection import train_test_split
+# from sklearn.decomposition import PCA
 import argparse
 import os
-# import lightgbm as lgbm
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -171,7 +168,26 @@ class DoClusters():
             # labels.rename(columns={'0':'label'})
         labels.to_csv(fout)
         return labels
+    
 
+        
+def calculate_iqr(df, col_name, th1=0.25, th3=0.75):
+    quartile1 = df[col_name].quantile(th1)
+    quartile3 = df[col_name].quantile(th3)
+    iqr = quartile3 - quartile1
+    return iqr
+
+def iq_range(arr):
+    q1 = np.quantile(arr, 0.25)
+    q3 = np.quantile(arr, 0.75)
+    iqr = q3 - q1
+    upper_bound = q3 + 1.5 * iqr
+    lower_bound = q1 - 1.5 * iqr
+    
+    outlier_indices = np.where((arr < lower_bound) | (arr > upper_bound))
+    outlier_values = arr[outlier_indices]
+    return outlier_indices, outlier_values
+    
 
 def annote(df_map, df_cl, tissue):
     depmap_id = df_cl["depmapId"]
@@ -211,7 +227,6 @@ def ClusterByTissues(df, df_cl, opts):
     lineage_1 = df_cl["lineage1"]
     lineage_1_unique = list(set(lineage_1))
     # lineage_1_unique = [ var.replace('/', '_') for var in lineage_1_unique]
-    # lineage_1_unique = [ var.replace(' ', '_') for var in lineage_1_unique]
     print('\n'.join(var for var in lineage_1_unique))
     sum_shape = 0
     print(msg)
@@ -227,6 +242,16 @@ def ClusterByTissues(df, df_cl, opts):
         sum_shape += df_tissue.shape[1]
         print(f'{tissue} == {df_tissue.shape[1]}')
         if df_tissue.shape[1] != 0:
+            # Remove outliers by IQR per tissue
+            iqr_arr = np.empty_like(df_tissue.columns)
+            for i, col in enumerate(df_tissue.columns):
+                iqr_arr[i] = calculate_iqr(df_tissue, col)
+            outlier_indices, outlier_values = iq_range(iqr_arr)
+            print(f"outliers of {tissue}: {'  '.join(df_tissue.iloc[:,outlier_indices[0]].columns.tolist())}\n")
+
+            df_tissue.drop(df_tissue.columns[outlier_indices[0]], axis=1, inplace=True)    # Dropping outliers
+            
+            # Perform clustering per tissue
             clusters_ = DoClusters(X=df_tissue, n_clusters=opts.n, mode=opts.k) 
             model = clusters_.do_clusters()
             # best_scores, best_knee = clusters_.get_score_n_knees()
@@ -319,7 +344,7 @@ def main():
         et = time.time()
         elapsed_time = et - st
         print(f" Execution time to clustering Fully DepMap :  {elapsed_time:.2f} seconds")
-        # clusters_.plot_score()
+        # clusters_all_.plot_score()
         
         # Performing Clustering on specific tissues:
         print(f'Computing common Essential Genes (EG): tissue DepMap')
@@ -332,8 +357,6 @@ def main():
         # Computing context-specific EG (csEGs)
         get_csEG(f1, f2, opts)
     
-    
-
 
 
 if __name__ == "__main__":
