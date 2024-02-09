@@ -25,8 +25,19 @@ For example, the submission of a EnGene requires two input files and the tissue(
 where the **CRISPRGeneEffect.csv** containes the CRISPR-Cas9 scores, while **cell-line-selector.csv** the cell lines corresponding to the lineages/tissues chosen. The EnGene software returns as main output a **output_bone.csv** file containing the label for each gene of the chosen tissue(s), computed by the chosen algorithm. EnGene searches for the cell lines in the CRISPRGeneEffect.csv by matching them with those from the selected tissue(s) form cell-line-selector.csv file. 
 
 .. note::
-    Currently, only one or all tissues can be selected, if **all** string is given to **-t** all cell lines are employed. 
-    In future, multiple choices will be added.
+    Currently, only one tissue can be selected. In future, multiple choices will be added.
+
+Handling NaN
+------------
+
+EnGene handles possible NaN values in input data by performing a complete removal of all cell lines(columns) containing NaN (-m drop) or 
+by executing an imputation using the `k-nearest neighbour algorithm <https://scikit-learn.org/stable/modules/generated/sklearn.impute.KNNImputer.html>`_. 
+
+Computing cEG and csEG
+----------------------
+
+The program firstly perform the clustering on the full DepMap matrix, outputting its results into the file : **Clusters_AllTissues_DepMap.csv**. Then, each tissue is processed and their results are outputted in the files name **cluster_{tissue}.csv**, which contain the cEG per tissue.  Finally, the csEG are calculated by subtracting the cEG per tissue from the cEG obtained from the DepMap full matrix.  
+
 
 The possible tissues to be selected are 
 

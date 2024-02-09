@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="Python" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Get Started with EnGene &mdash; EnGene 0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -11,9 +12,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -41,7 +41,11 @@
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Get Started with EnGene</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#input-data">Input Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#submission-in-local">Submission in Local</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#submission-in-local">Submission in Local</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#handling-nan">Handling NaN</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computing-ceg-and-cseg">Computing cEG and csEG</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#submission-in-batch">Submission in Batch</a></li>
 </ul>
 </li>
@@ -71,11 +75,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="get-started-with-engene">
-<h1>Get Started with EnGene<a class="headerlink" href="#get-started-with-engene" title="Permalink to this headline"></a></h1>
+  <section id="get-started-with-engene">
+<h1>Get Started with EnGene<a class="headerlink" href="#get-started-with-engene" title="Permalink to this heading"></a></h1>
 <p>This session gives suggestions about setting up an input file for the execution of EnGene.</p>
-<div class="section" id="input-data">
-<h2>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h2>
+<section id="input-data">
+<h2>Input Data<a class="headerlink" href="#input-data" title="Permalink to this heading"></a></h2>
 <p>The input files for EnGene are file.csv (tsv or txt) containing CRISPR scores from knockout screens from project Achilles, reference selector cell lines, as well as genomic characterization data from the CCLE project. Tthese can be download from  <a class="reference external" href="https://depmap.org/portal/download/all/">DepMap portal</a> .</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -86,9 +90,9 @@ Therefore, context-specific cell lines must be extracted beforehand.</p>
 <p class="admonition-title">Warning</p>
 <p>Continuous updates are added to the portal, thus, it is always suggested to employ the latest data set.</p>
 </div>
-</div>
-<div class="section" id="submission-in-local">
-<h2>Submission in Local<a class="headerlink" href="#submission-in-local" title="Permalink to this headline"></a></h2>
+</section>
+<section id="submission-in-local">
+<h2>Submission in Local<a class="headerlink" href="#submission-in-local" title="Permalink to this heading"></a></h2>
 <p>For example, the submission of a EnGene requires two input files and the tissue(s) to be investigated. For example, it can be executed in local as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">EnGene</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">i</span> <span class="n">CRISPRGeneEffect</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">ref</span> <span class="n">cell</span><span class="o">-</span><span class="n">line</span><span class="o">-</span><span class="n">selector</span><span class="o">.</span><span class="n">csv</span> <span class="o">-</span><span class="n">t</span> <span class="n">Bone</span> <span class="o">-</span><span class="n">m</span> <span class="n">impute</span> <span class="o">-</span><span class="n">n</span> <span class="mi">2</span> <span class="o">-</span><span class="n">k</span> <span class="n">centroids</span> <span class="o">-</span><span class="n">o</span> <span class="n">output_bone</span>
 </pre></div>
@@ -96,9 +100,16 @@ Therefore, context-specific cell lines must be extracted beforehand.</p>
 <p>where the <strong>CRISPRGeneEffect.csv</strong> containes the CRISPR-Cas9 scores, while <strong>cell-line-selector.csv</strong> the cell lines corresponding to the lineages/tissues chosen. The EnGene software returns as main output a <strong>output_bone.csv</strong> file containing the label for each gene of the chosen tissue(s), computed by the chosen algorithm. EnGene searches for the cell lines in the CRISPRGeneEffect.csv by matching them with those from the selected tissue(s) form cell-line-selector.csv file.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Currently, only one or all tissues can be selected, if <strong>all</strong> string is given to <strong>-t</strong> all cell lines are employed.
-In future, multiple choices will be added.</p>
+<p>Currently, only one tissue can be selected. In future, multiple choices will be added.</p>
 </div>
+<section id="handling-nan">
+<h3>Handling NaN<a class="headerlink" href="#handling-nan" title="Permalink to this heading"></a></h3>
+<p>EnGene handles possible NaN values in input data by performing a complete removal of all cell lines(columns) containing NaN (-m drop) or
+by executing an imputation using the <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.impute.KNNImputer.html">k-nearest neighbour algorithm</a>.</p>
+</section>
+<section id="computing-ceg-and-cseg">
+<h3>Computing cEG and csEG<a class="headerlink" href="#computing-ceg-and-cseg" title="Permalink to this heading"></a></h3>
+<p>The program firstly perform the clustering on the full DepMap matrix, outputting its results into the file : <strong>Clusters_AllTissues_DepMap.csv</strong>. Then, each tissue is processed and their results are outputted in the files name <strong>cluster_{tissue}.csv</strong>, which contain the cEG per tissue.  Finally, the csEG are calculated by subtracting the cEG per tissue from the cEG obtained from the DepMap full matrix.</p>
 <p>The possible tissues to be selected are</p>
 <table class="hlist"><tr><td><ul class="simple">
 <li><p>Thyroid</p></li>
@@ -167,9 +178,10 @@ required named arguments:
                         Input tissue to be parsed; all cell lines are employed if == all
 </pre></div>
 </div>
-</div>
-<div class="section" id="submission-in-batch">
-<h2>Submission in Batch<a class="headerlink" href="#submission-in-batch" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+<section id="submission-in-batch">
+<h2>Submission in Batch<a class="headerlink" href="#submission-in-batch" title="Permalink to this heading"></a></h2>
 <p>For instance, the submission in batch can be performed with the following template script for SLURM-managed HPC:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 <span class="c1"># Job name:</span>
@@ -189,8 +201,8 @@ required named arguments:
 <span class="c1"># python $SRC -i $ARG1 -ref $ARG2 -</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
