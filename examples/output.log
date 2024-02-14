@@ -1,0 +1,136 @@
+ if existing missing values: KNN-imputing data ...
+Warning: Ignoring XDG_SESSION_TYPE=wayland on Gnome. Use QT_QPA_PLATFORM=wayland to run on Wayland anyway.
+Computing common Essential Genes (EG): full DpMap
+ Execution time to clustering Fully DepMap :  3.66 seconds
+Computing common Essential Genes (EG): tissue DepMap
+Head and Neck
+Lung
+Breast
+Skin
+Esophagus/Stomach
+Uterus
+Fibroblast
+Soft Tissue
+Eye
+Unknown
+Liver
+Myeloid
+Bone
+Lymphoid
+Cervix
+Peripheral Nervous System
+Bladder/Urinary Tract
+Pancreas
+Hair
+Adrenal Gland
+Embryonal
+Bowel
+Kidney
+Normal
+Prostate
+Vulva/Vagina
+Other
+Thyroid
+Ampulla of Vater
+Ovary/Fallopian Tube
+Muscle
+Testis
+Biliary Tract
+Pleura
+CNS/Brain
+ Tissue  |  No. Cell lines
+--------------------------
+    
+Head and Neck == 72
+outliers of Head and Neck: ACH-001625
+
+Lung == 119
+outliers of Lung: ACH-000562  ACH-000563  ACH-000878  ACH-000916
+
+Breast == 48
+outliers of Breast: 
+
+Skin == 71
+outliers of Skin: 
+
+Esophagus/Stomach == 65
+outliers of Esophagus/Stomach: ACH-001544  ACH-002243
+
+Uterus == 33
+outliers of Uterus: 
+
+Fibroblast == 0
+Soft Tissue == 36
+outliers of Soft Tissue: 
+
+Eye == 15
+outliers of Eye: ACH-002014
+
+Unknown == 0
+Liver == 24
+outliers of Liver: 
+
+Myeloid == 37
+outliers of Myeloid: 
+
+Bone == 37
+outliers of Bone: 
+
+Lymphoid == 81
+outliers of Lymphoid: 
+
+Cervix == 18
+outliers of Cervix: ACH-001341  ACH-001525
+
+Peripheral Nervous System == 41
+outliers of Peripheral Nervous System: 
+
+Bladder/Urinary Tract == 32
+outliers of Bladder/Urinary Tract: 
+
+Pancreas == 47
+outliers of Pancreas: ACH-000093  ACH-000139  ACH-000281  ACH-001382
+
+Hair == 0
+Adrenal Gland == 0
+Embryonal == 0
+Bowel == 59
+outliers of Bowel: 
+
+Kidney == 37
+outliers of Kidney: 
+
+Normal == 0
+Prostate == 10
+outliers of Prostate: 
+
+Vulva/Vagina == 2
+outliers of Vulva/Vagina: 
+
+Other == 1
+outliers of Other: 
+
+Thyroid == 11
+outliers of Thyroid: ACH-000191
+
+Ampulla of Vater == 4
+outliers of Ampulla of Vater: ACH-000377
+
+Ovary/Fallopian Tube == 59
+outliers of Ovary/Fallopian Tube: 
+
+Muscle == 0
+Testis == 2
+outliers of Testis: 
+
+Biliary Tract == 34
+outliers of Biliary Tract: ACH-001536  ACH-001842  ACH-002647
+
+Pleura == 19
+outliers of Pleura: 
+
+CNS/Brain == 86
+outliers of CNS/Brain: ACH-001711
+
+ Execution time to clustering Fully DepMap :  10.96 seconds
+

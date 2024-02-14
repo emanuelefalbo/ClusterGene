@@ -27,13 +27,14 @@ The EnGene software runs with the python3 language. The following packages are r
 #. matplotlib
 #. seaborn
 #. sklearn_extra
+#. tdqm
 
 Pip or Conda 
 ############
 
 The above packages can be installed by pip as: ::
 
-    pip install numpy pandas argparse scikit-learn scikit-learn-extra seaborn matplotlib kneed 
+    pip install numpy pandas argparse scikit-learn scikit-learn-extra seaborn matplotlib kneed tdqm
 
 The above libraries might give generate some conflicts for future configuration of the program. 
 In that case, a conda environment is suggested. To install conda locally you can follow this `conda link <https://docs.conda.io/projects/conda/en/latest/index.html>`__ . Once conda is installed, it will be added automatically to your PATH (.bashrc or .bash_profile) which  sligthly slows your prompt ; this can be seen at prompt of the terminal like follows:

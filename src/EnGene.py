@@ -25,21 +25,18 @@ def range1(start, end):
 
 def cml_parser():
     parser = argparse.ArgumentParser('EnGene.py', formatter_class=argparse.RawDescriptionHelpFormatter)
-    # parser.add_argument('option_file', nargs="?", help="json option file")
-    # parser.add_argument('filename', nargs="?",  help="input file")
     requiredNamed = parser.add_argument_group('required named arguments')
     requiredNamed.add_argument('-i', '--input', help='Input file CRISPR-Cas9 matrix', required=True)
     requiredNamed.add_argument('-ref', '--reference', help='Input reference file name', required=True)
     requiredNamed.add_argument('-t', '--tissue',default='all', help='Input tissue to be parsed; all cell lines are employed if == all', required=True)
-    parser.add_argument('-o', '--output', default="output", help="name output file")
     parser.add_argument('-m', default="impute", choices=["drop", "impute"], help="choose to drop Nan or impute")
     parser.add_argument('-n', default=2, type=int, help="Number of clusters for  clustering algorithms")
     parser.add_argument('-k', default="centroids", choices=["centroids", "medoids", "both"], help="choose between KMeans and K-medoids clustering algorithms or both")
     opts = parser.parse_args()
     if opts.input == None:
         raise FileNotFoundError('Missing CRISPR-Cas9 input file or None')
-    # elif opts.reference == None:
-    #      raise FileNotFoundError('Missing reference input file or None')
+    elif opts.reference == None:
+         raise FileNotFoundError('Missing reference input file or None')
     return  opts
 
 
@@ -89,12 +86,12 @@ def impute_data(df):
     columns_Nans = df_knn.columns[df_knn.isna().any()].to_list()
     if len(columns_Nans) != 0:
        df_knn_imputed = pd.DataFrame(knn_imputer.fit_transform(df_knn), columns=df_knn.columns)
-       null_values = df_knn[columns_Nans[0]].isnull()
-       fig = plt.figure()
-       fig = df_knn_imputed.plot(x=df_knn.columns[0], y=columns_Nans[0], kind='scatter', c=null_values, cmap='winter', 
-                            title='KNN Imputation', colorbar=False, edgecolor='k', figsize=(10,8))
-       # plt.legend()
-       plt.savefig("KNN_imputed_column_0th.png")
+    #    null_values = df_knn[columns_Nans[0]].isnull()
+    #    fig = plt.figure()
+    #    fig = df_knn_imputed.plot(x=df_knn.columns[0], y=columns_Nans[0], kind='scatter', c=null_values, cmap='winter', 
+    #                         title='KNN Imputation', colorbar=False, edgecolor='k', figsize=(10,8))
+    #    # plt.legend()
+    #    plt.savefig("KNN_imputed_column_0th.png")
     else:
         df_knn_imputed = df
     return df_knn_imputed
@@ -218,7 +215,7 @@ def annote(df_map, df_cl, tissue):
 
 
 def ClusterByTissues(df, df_cl, opts):
-    # Function to perform Otsu on more tissues
+    # Function to perform Clustering on more tissues
     # tissue = opts.tissue
     msg = """ Tissue  |  No. Cell lines
 --------------------------
@@ -257,31 +254,6 @@ def ClusterByTissues(df, df_cl, opts):
             # best_scores, best_knee = clusters_.get_score_n_knees()
             fout = f'clusters_{tissue}'
             labels = clusters_.labels_to_csv(fout)
-    # check if dimensions are correct
-    # if sum_shape != df.shape[1]:
-    #     print("The summed lenght of cell lines subsets is not equal to the original no of cell lines !")
-    # print(df.shape, sum_shape)
-    
-def get_csEG(file1, file2, opts):
-    # Get common EG from mode of mode
-    df = pd.read_csv(file1, index_col=0)
-    cEG = df.index[df['label'] == '1'].tolist()
-    # cEG = dfout.index[dfout['label'] == 'E'].tolist()
-    cEG_set = set(cEG)
-    # print(cEG_set)
-    # print('Counts from All Tissues:\n')
-    # print(dfout.value_counts())
-    
-    # Get context-specific EG from selected tissue
-    df_t = pd.read_csv(file2, index_col=0)
-    tEG = df_t.index[df_t['label'] == '1'].tolist()
-    tEG_set = set(tEG)
-    # print('Counts from Selected Tissue:\n')
-    # print(df_t.value_counts())
-    fout = f'csEG_{opts.tissue}.csv'
-    csEG = list(cEG_set- tEG_set)
-    pd.Series(csEG).to_csv(fout, index=False)
-    
 
 # def do_PCA(X, labels):
 #     X = X.to_numpy()
@@ -291,20 +263,16 @@ def get_csEG(file1, file2, opts):
 #     print(f' ... Performing PCA analysis for n_component for 90% of variance')
 #     print(f' explained variance ratio == {pca_.explained_variance_ratio_}')
 #     count, unique = np.unique(labels)
-    # fig = plt.figure()
-    # for i, j in zip(count, u_labels):
-    #     plt.scatter(X_pca[labels == i, 0], X_pca[labels == i, 1]  edgecolors='k', label= f"Cluster {i} : {j} ")
+#     fig = plt.figure()
+#     for i, j in zip(count, u_labels):
+#         plt.scatter(X_pca[labels == i, 0], X_pca[labels == i, 1]  edgecolors='k', label= f"Cluster {i} : {j} ")
 
 
 def get_csEG(file1, file2, opts):
     # Get common EG from mode of mode
     df = pd.read_csv(file1, index_col=0)
     cEG = df.index[df['0'] == 1].tolist()
-    # cEG = dfout.index[dfout['label'] == 'E'].tolist()
     cEG_set = set(cEG)
-    # print(cEG_set)
-    # print('Counts from All Tissues:\n')
-    # print(dfout.value_counts())
     
     # Get context-specific EG from selected tissue
     df_t = pd.read_csv(file2, index_col=0)
