@@ -2,7 +2,6 @@
 
 import time
 import sys
-from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -15,6 +14,7 @@ from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bo
 # from sklearn.decomposition import PCA
 import argparse
 import os
+from joblib import Parallel, delayed
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -78,6 +78,10 @@ def drop_na(df):
         df_dropped = df
     return df_dropped
 
+def parallel_knn_imputation_chunk(data):
+    knn_imputer = KNNImputer(missing_values=np.nan, n_neighbors=5, weights='uniform', metric='nan_euclidean')
+    return pd.DataFrame(knn_imputer.fit_transform(data), columns=data.columns)
+
 def impute_data(df):
     # Imputing data by means of K-Nearest Neighbours algo
     print(f" if existing missing values: KNN-imputing data ...")
@@ -85,6 +89,26 @@ def impute_data(df):
     df_knn = df.copy()
     columns_Nans = df_knn.columns[df_knn.isna().any()].to_list()
     if len(columns_Nans) != 0:
+       df_knn_imputed = pd.DataFrame(knn_imputer.fit_transform(df_knn), columns=df_knn.columns)
+    #    null_values = df_knn[columns_Nans[0]].isnull()
+    #    fig = plt.figure()
+    #    fig = df_knn_imputed.plot(x=df_knn.columns[0], y=columns_Nans[0], kind='scatter', c=null_values, cmap='winter', 
+    #                         title='KNN Imputation', colorbar=False, edgecolor='k', figsize=(10,8))
+    #    # plt.legend()
+    #    plt.savefig("KNN_imputed_column_0th.png")
+    else:
+        df_knn_imputed = df
+    return df_knn_imputed
+
+
+def parallel_impute_data(df):
+    # Imputing data by means of K-Nearest Neighbours algo
+    print(f" if existing missing values: KNN-imputing data ...")
+    knn_imputer = KNNImputer(missing_values=np.nan, n_neighbors=5, weights='uniform', metric='nan_euclidean')
+    df_knn = df.copy()
+    columns_Nans = df_knn.columns[df_knn.isna().any()].to_list()
+    if len(columns_Nans) != 0:
+        
        df_knn_imputed = pd.DataFrame(knn_imputer.fit_transform(df_knn), columns=df_knn.columns)
     #    null_values = df_knn[columns_Nans[0]].isnull()
     #    fig = plt.figure()
@@ -107,7 +131,7 @@ class DoClusters():
     def do_clusters(self):
         # if self.mode == "both":
         if self.mode == "centroids":
-            self.model = [ KMeans(k, n_init=10, random_state=42).fit(self.X) for k in range1(self.kmin, self.kmax) ]
+            self.model = [ KMeans(k, n_init=10, random_state=0).fit(self.X) for k in range1(self.kmin, self.kmax) ]
         elif self.mode == "medoids":
             self.model = [ KMedoids(k).fit(self.X) for k in range1(self.kmin, self.kmax) ]
         return self.model
@@ -156,7 +180,8 @@ class DoClusters():
         if len(self.model) > 1:
             for idx, var in enumerate(self.model):
                     if var.get_params()["n_clusters"] == self.best_knee:
-                        labels = pd.Series(var.labels_, index=self.index)
+                        # labels = pd.Series(var.labels_, index=self.index)
+                        labels = pd.DateFrame({'Gene': self.index[idx], 'label': var.labels_}, index=self.index)
                         break
             # labels.rename(columns={'0':'label'})
             labels.to_csv(fout)
@@ -253,7 +278,7 @@ def ClusterByTissues(df, df_cl, opts):
             model = clusters_.do_clusters()
             # best_scores, best_knee = clusters_.get_score_n_knees()
             fout = f'clusters_{tissue}'
-            labels = clusters_.labels_to_csv(fout)
+            clusters_.labels_to_csv(fout)
 
 # def do_PCA(X, labels):
 #     X = X.to_numpy()
@@ -271,11 +296,13 @@ def ClusterByTissues(df, df_cl, opts):
 def get_csEG(file1, file2, opts):
     # Get common EG from mode of mode
     df = pd.read_csv(file1, index_col=0)
-    cEG = df.index[df['0'] == 1].tolist()
+    print(df)
+    cEG = df.index[df['0'] == 0].tolist()
     cEG_set = set(cEG)
     
     # Get context-specific EG from selected tissue
     df_t = pd.read_csv(file2, index_col=0)
+    print(df_t)
     tEG = df_t.index[df_t['0'] == 1].tolist()
     tEG_set = set(tEG)
     # print('Counts from Selected Tissue:\n')
@@ -295,7 +322,7 @@ def main():
     else:
         df_map, df_cl = read_input(opts)
         
-        # Drop Nan or KNN Impute data
+        # # Drop Nan or KNN Impute data
         if opts.m == "drop":
             df_map = drop_na(df_map)
         elif opts.m == "impute":
@@ -303,7 +330,7 @@ def main():
         
         # DoClusters class takes X(n_sample, n_features) DataFrame to clustering
         # full DepMap matrix
-        print(f'Computing common Essential Genes (EG): full DpMap')
+        print(f'Computing common Essential Genes (EG): full DepMap')
         st = time.time()
         clusters_all_ = DoClusters(X=df_map, n_clusters=opts.n, mode=opts.k) 
         model_all = clusters_all_.do_clusters()
@@ -312,9 +339,8 @@ def main():
         et = time.time()
         elapsed_time = et - st
         print(f" Execution time to clustering Fully DepMap :  {elapsed_time:.2f} seconds")
-        # clusters_all_.plot_score()
         
-        # Performing Clustering on specific tissues:
+        # # Performing Clustering on specific tissues:
         print(f'Computing common Essential Genes (EG): tissue DepMap')
         st = time.time()
         ClusterByTissues(df_map, df_cl, opts)
