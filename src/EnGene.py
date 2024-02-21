@@ -276,13 +276,11 @@ def ClusterByTissues(df, df_cl, opts):
 def get_csEG(file1, file2, opts):
     # Get common EG from mode of mode
     df = pd.read_csv(file1, index_col=0)
-    print(df)
     cEG = df.index[df['0'] == 0].tolist()
     cEG_set = set(cEG)
     
     # Get context-specific EG from selected tissue
     df_t = pd.read_csv(file2, index_col=0)
-    print(df_t)
     tEG = df_t.index[df_t['0'] == 1].tolist()
     tEG_set = set(tEG)
     # print('Counts from Selected Tissue:\n')
