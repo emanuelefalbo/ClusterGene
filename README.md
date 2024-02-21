@@ -41,14 +41,9 @@ version from the GitHub page to your local path: :
 
     git clone https://github.com/emanuelefalbo/EnGene.git 
 
-::: {.note}
-::: {.admonition-title}
-Note
-:::
 
 Cloning with SSH can be done if a SSH protected-key has been added to
 your GitHub profile.
-:::
 
 Done! You have the current version of EnGene downloaded locally.
 
@@ -67,71 +62,7 @@ packages are required for the correct behaviour of EnGene:
 7.  seaborn
 8.  sklearn\_extra
 
-Pip or Conda
-------------
-
-The above packages can be installed by pip as: :
-
-    pip install numpy pandas argparse scikit-learn scikit-learn-extra seaborn matplotlib kneed 
-
-The above libraries might give generate some conflicts for future
-configuration of the program. In that case, a conda environment is
-suggested. To install conda locally you can follow this [conda
-link](https://docs.conda.io/projects/conda/en/latest/index.html) . Once
-conda is installed, it will be added automatically to your PATH (.bashrc
-or .bash\_profile) which sligthly slows your prompt ; this can be seen
-at prompt of the terminal like follows:
-
-![image](images/cml.png){width="400px"}
-
-This will activate the base environment every time a terminal is open.
-However, to avoid this you can create a file name **.condarc** and
-insert this line **auto\_activate\_base: false**
-
-Then, the following steps can be followed for settting up properly
-conda.
-
-**1.** Create an environment as follows: :
-
-    conda create -n myenv 
-
-you can list the environment by executing: :
-
-    conda env list
-
-**2.** Activate your environment: :
-
-    conda activate myenv
-
-**3.** Install all the above packages: :
-
-    conda install numpy pandas   
-
-However, some libraries, such as scikit-learn and kneed, are not present
-in common searching channels of conda, therefore, these can be installed
-from different channels: :
-
-    conda install -c conda-forge matplotlib scikit-learn scikit-learn-extra seaborn argparse 
-
-::: {.note}
-::: {.admonition-title}
-Note
-:::
-
-The installation of these packages my require some time, beacuse conda
-is clever enough to check conflicts and compatibility between libraries
-versions.
-:::
-
-::: {.warning}
-::: {.admonition-title}
-Warning
-:::
-
-When working in conda envirnoment it is preferable to install packages
-with conda such as shown here, and **NOT** with pip, which might cause
-conflicts.
-:::
+The above packages can be installed by pip. 
 
 Get Started with EnGene
 =======================
@@ -180,24 +111,12 @@ by selecting Tools option and then pressing *Create custom list* and
 sleecting all tissues. After saving the list, the file will be
 downloaded.
 
-::: {.note}
-::: {.admonition-title}
-Note
-:::
-
 The file CRISPRGeneEffect.csv contains the knockout screens scores for
 all tissue cell lines. The reference file must contain the column
 \"lineage1\" with information on specific tissue.
-:::
-
-::: {.warning}
-::: {.admonition-title}
-Warning
-:::
 
 Continuous updates are added to the portal, thus, it is always suggested
 to employ the latest data set.
-:::
 
 Imputing or dropping NaN
 ------------------------
@@ -221,13 +140,7 @@ If a binary identification is carried out, i.e. by giving -n 2, two
 classes corresponding to EG and not-essential genes (NEG) are
 calculated.
 
-> ::: {.note}
-> ::: {.admonition-title}
-> Note
-> :::
->
-> Further analysis on more clusters has not been largely tested.
-> :::
+Further analysis on more clusters has not been largely tested.
 
 EnGene firstly performs a clustering on the full CRISPR matrix returning
 the common EG (cEG) and NEG to all cell lines , and the after having
@@ -236,14 +149,8 @@ spefic for each tissue. The output of the full matrix is reported in an
 file named **Clusters\_AllTissues\_DepMap.csv**, while for each tissue
 the files are names **cluster\_{tissue}.csv**
 
-> ::: {.warning}
-> ::: {.admonition-title}
-> Warning
-> :::
->
-> Thes files must not be renamed since are used internally to compute
-> context-specific EG
-> :::
+Thes files must not be renamed since are used internally to compute
+context-specific EG
 
 Afterwards, the module computes the csEG for the tissue indicated by the
 **-t** option, subctracting from the cEG from the EG of the selected
@@ -282,14 +189,9 @@ chosen tissue(s), computed by the chosen algorithm. EnGene searches for
 the cell lines in the CRISPRGeneEffect.csv by matching them with those
 from the selected tissue(s) form cell-line-selector.csv file.
 
-::: {.note}
-::: {.admonition-title}
-Note
-:::
 
 Currently, only one tissue can be selected. In future, multiple choices
 will be added.
-:::
 
 ### Handling NaN
 
@@ -310,7 +212,6 @@ full matrix.
 
 The possible tissues to be selected are
 
-::: {.hlist columns="6"}
 -   Thyroid
 -   Ampulla of Vater
 -   Cervix
@@ -343,4 +244,4 @@ The possible tissues to be selected are
 -   Kidney
 -   Lung
 -   CNS/Brain
-:::
+
