@@ -28,10 +28,10 @@ def cml_parser():
     requiredNamed = parser.add_argument_group('required named arguments')
     requiredNamed.add_argument('-i', '--input', help='Input file CRISPR-Cas9 matrix', required=True)
     requiredNamed.add_argument('-ref', '--reference', help='Input reference file name', required=True)
-    requiredNamed.add_argument('-t', '--tissue',default='all', help='Input tissue to be parsed; all cell lines are employed if == all', required=True)
+    requiredNamed.add_argument('-t', '--tissue',default='all', help='Input tissue to be parsed', required=True)
     parser.add_argument('-m', default="impute", choices=["drop", "impute"], help="choose to drop Nan or impute")
     parser.add_argument('-n', default=2, type=int, help="Number of clusters for  clustering algorithms")
-    parser.add_argument('-k', default="centroids", choices=["centroids", "medoids", "both"], help="choose between KMeans and K-medoids clustering algorithms or both")
+    parser.add_argument('-k', default="centroids", choices=["centroids", "medoids", "both"], help="choose between KMeans and K-medoids clustering algorithms")
     opts = parser.parse_args()
     if opts.input == None:
         raise FileNotFoundError('Missing CRISPR-Cas9 input file or None')
@@ -78,9 +78,6 @@ def drop_na(df):
         df_dropped = df
     return df_dropped
 
-def parallel_knn_imputation_chunk(data):
-    knn_imputer = KNNImputer(missing_values=np.nan, n_neighbors=5, weights='uniform', metric='nan_euclidean')
-    return pd.DataFrame(knn_imputer.fit_transform(data), columns=data.columns)
 
 def impute_data(df):
     # Imputing data by means of K-Nearest Neighbours algo
@@ -100,25 +97,6 @@ def impute_data(df):
         df_knn_imputed = df
     return df_knn_imputed
 
-
-def parallel_impute_data(df):
-    # Imputing data by means of K-Nearest Neighbours algo
-    print(f" if existing missing values: KNN-imputing data ...")
-    knn_imputer = KNNImputer(missing_values=np.nan, n_neighbors=5, weights='uniform', metric='nan_euclidean')
-    df_knn = df.copy()
-    columns_Nans = df_knn.columns[df_knn.isna().any()].to_list()
-    if len(columns_Nans) != 0:
-        
-       df_knn_imputed = pd.DataFrame(knn_imputer.fit_transform(df_knn), columns=df_knn.columns)
-    #    null_values = df_knn[columns_Nans[0]].isnull()
-    #    fig = plt.figure()
-    #    fig = df_knn_imputed.plot(x=df_knn.columns[0], y=columns_Nans[0], kind='scatter', c=null_values, cmap='winter', 
-    #                         title='KNN Imputation', colorbar=False, edgecolor='k', figsize=(10,8))
-    #    # plt.legend()
-    #    plt.savefig("KNN_imputed_column_0th.png")
-    else:
-        df_knn_imputed = df
-    return df_knn_imputed
 
 class DoClusters():
     def __init__(self, X, n_clusters, mode):
@@ -175,7 +153,9 @@ class DoClusters():
     
     def labels_to_csv(self, nameout):
         nameout =  nameout.replace('/', '_')
-        fout = nameout + ".csv"
+        out_dir = "output"
+        os.makedirs(out_dir, exist_ok=True)
+        fout = os.path.join(out_dir, nameout + ".csv")
         # write the labels to CSV file
         if len(self.model) > 1:
             for idx, var in enumerate(self.model):
@@ -314,8 +294,9 @@ def get_csEG(file1, file2, opts):
 
 def main():
     opts = cml_parser()
-    f1 = 'Clusters_AllTissues_DepMap.csv'
-    f2 = f'clusters_{opts.tissue}.csv'
+    output_dir = "output"
+    f1 = os.path.join(output_dir, 'Clusters_AllTissues_DepMap.csv')
+    f2 = os.path.join(output_dir, f'clusters_{opts.tissue}.csv')    
     # Get csEGs if files already exist
     if os.path.exists(f1) and os.path.exists(f2):
         get_csEG(f1, f2, opts)
