@@ -1,7 +1,7 @@
 Introduction to EnGene
 ======================
 
-This is a manual for the EnGene module which is currently employed to identify common and context-specific essential genes (EG) from gene deletion experimetnal scores, such as thso from CRISPR-Ca9 or RNA-i experiments.
+This is a manual for the EnGene module which is currently employed to identify common and context-specific essential genes (EG) from gene deletion experimetnal scores, such as experimental scores downloaded from the DepMap porta from CRISPR-Ca9 or RNA-i experiments.
 
 Theoretical Background 
 ######################

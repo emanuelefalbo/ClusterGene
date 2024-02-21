@@ -1,3 +1,89 @@
+Introduction to EnGene
+======================
+
+This is a manual for the EnGene module which is currently employed to identify common and context-specific essential genes (EG) from gene deletion experimetnal scores, such as experimental scores downloaded from the DepMap porta from CRISPR-Ca9 or RNA-i experiments.
+
+Theoretical Background 
+######################
+
+When analysing data from CRISPR-Cas9 screens in functional and translational studies another major computational problem is to classify and distinguish genetic dependencies involved in normal essential biological processes from disease- and genomic-context-specific vulnerabilities. Identifying context-specific essential genes, and distinguishing them from constitutively essential genes shared across all tissues and cells, i.e. common or core-essential genes (cEG), is also crucial for elucidating the mechanisms involved in tissue-specific diseases. In this prospective, focusing on very well-defined genomic contexts in tumours allows identifying cancer synthetic lethalities that could be exploited therapeutically.
+
+Gene dependency profiles, generated via pooled CRISPR-Cas9 screening across large panels of human cancer cell lines, are becoming increasingly available. However, identifying and discriminating CFGs and context-specific essential genes (csEG) from this type of functional genetics screens remains not trivial.
+
+To this end, EnGene aims to identify EG for common and specifci tissues offering the possibility to discover novel possible cancer-related targes.
+Installation
+============
+
+The EnGene software can be directly download from the `GitHub page <https://github.com/emanuelefalbo/EnGene>`_ by using the git. The following steps briefly guides you to the use of git: for furher information follow `this link <https://www.atlassian.com/git>`_ .   
+
+**1.** If you're using the https option, you can copy the EnGene version from the GitHub page to your local path: ::
+
+    git clone https://github.com/emanuelefalbo/EnGene.git 
+
+
+.. note::
+    Cloning with SSH can be done if a SSH protected-key has been added to your GitHub profile. 
+
+Done! You have the current version of EnGene downloaded locally.
+
+
+Requirements
+############
+
+The EnGene software runs with the python3 language. The following packages are required for the correct behaviour of EnGene: 
+
+#. numpy
+#. pandas
+#. argparse
+#. sklearn
+#. kneed
+#. matplotlib
+#. seaborn
+#. sklearn_extra
+
+Pip or Conda 
+############
+
+The above packages can be installed by pip as: ::
+
+    pip install numpy pandas argparse scikit-learn scikit-learn-extra seaborn matplotlib kneed 
+
+The above libraries might give generate some conflicts for future configuration of the program. 
+In that case, a conda environment is suggested. To install conda locally you can follow this `conda link <https://docs.conda.io/projects/conda/en/latest/index.html>`__ . Once conda is installed, it will be added automatically to your PATH (.bashrc or .bash_profile) which  sligthly slows your prompt ; this can be seen at prompt of the terminal like follows:
+ 
+.. image:: images/cml.png
+  :width: 400
+
+This will activate the base environment every time a terminal is open. However, to avoid this you can create a file name **.condarc** and insert this line **auto_activate_base: false**
+
+Then, the following steps can be followed for settting up properly conda. 
+
+**1.** Create an environment as follows: ::
+
+    conda create -n myenv 
+
+you can list the environment by executing: ::
+
+   conda env list
+
+**2.** Activate your environment: ::
+  
+   conda activate myenv
+
+**3.** Install all the above packages: ::
+
+   conda install numpy pandas   
+
+However, some libraries, such as scikit-learn and kneed, are not present in common searching channels of conda, therefore, these can be installed from different channels: ::
+
+  conda install -c conda-forge matplotlib scikit-learn scikit-learn-extra seaborn argparse 
+
+.. note::
+    The installation of these packages my require some time, beacuse conda is clever enough to check conflicts and compatibility between libraries versions. 
+
+.. warning::
+    When working in conda envirnoment it is preferable to install packages with conda such as shown here, and **NOT** with pip, which might cause conflicts. 
+
 Get Started with EnGene
 =======================
 
