@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""
+author: Emanuele Falbo
+Finanziamento
+MUR-FSC 2014-2020, Progetto CIR01_00017—“CNRBiOmics Centro Nazionale di Ricerca
+in Bioinformatica per le Scienze Omiche”—Rafforzamento del capitale umano”—CUP
+B56J20000960001.
+"""
+
 import time
 import sys
 import numpy as np
@@ -31,7 +39,7 @@ def cml_parser():
     requiredNamed.add_argument('-t', '--tissue',default='all', help='Input tissue to be parsed', required=True)
     parser.add_argument('-m', default="impute", choices=["drop", "impute"], help="choose to drop Nan or impute")
     parser.add_argument('-n', default=2, type=int, help="Number of clusters for  clustering algorithms")
-    parser.add_argument('-k', default="centroids", choices=["centroids", "medoids", "both"], help="choose between KMeans and K-medoids clustering algorithms")
+    parser.add_argument('-k', default="centroids", choices=["centroids", "medoids"], help="choose between KMeans and K-medoids clustering algorithms")
     opts = parser.parse_args()
     if opts.input == None:
         raise FileNotFoundError('Missing CRISPR-Cas9 input file or None')

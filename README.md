@@ -113,7 +113,7 @@ downloaded.
 
 The file CRISPRGeneEffect.csv contains the knockout screens scores for
 all tissue cell lines. The reference file must contain the column
-\"lineage1\" with information on specific tissue.
+\"lineage1\" \“depmapId”\ with information on specific tissue.
 
 Continuous updates are added to the portal, thus, it is always suggested
 to employ the latest data set.
@@ -182,7 +182,7 @@ as follows: :
     python EnGene.py -i CRISPRGeneEffect.csv -ref cell-line-selector.csv -t Bone -m impute -n 2 -k centroids  
 
 where the **CRISPRGeneEffect.csv** containes the CRISPR-Cas9 scores,
-while **cell-line-selector.csv** the cell lines corresponding to the
+while **cell-line-selector.csv**, whose examplar file is in example folder,  the cell lines corresponding to the
 lineages/tissues chosen. The EnGene software returns as main output a
 **output\_bone.csv** file containing the label for each gene of the
 chosen tissue(s), computed by the chosen algorithm. EnGene searches for
