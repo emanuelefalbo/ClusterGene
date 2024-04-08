@@ -1,7 +1,7 @@
-Introduction to EnGene
+Introduction to ClusterGene
 ======================
 
-This is a manual for the EnGene module which is currently employed to
+This is a manual for the ClusterGene module which is currently employed to
 identify common and context-specific essential genes (EG) from gene
 deletion experimetnal scores, such as experimental scores downloaded
 from the DepMap porta from CRISPR-Ca9 or RNA-i experiments.
@@ -27,31 +27,31 @@ increasingly available. However, identifying and discriminating CFGs and
 context-specific essential genes (csEG) from this type of functional
 genetics screens remains not trivial.
 
-To this end, EnGene aims to identify EG for common and specifci tissues
+To this end, ClusterGene aims to identify EG for common and specifci tissues
 offering the possibility to discover novel possible cancer-related
 targes. Installation ============
 
-The EnGene software can be directly download from the [GitHub
-page](https://github.com/emanuelefalbo/EnGene) by using the git. The
+The ClusterGene software can be directly download from the [GitHub
+page](https://github.com/emanuelefalbo/ClusterGene) by using the git. The
 following steps briefly guides you to the use of git: for furher
 information follow [this link](https://www.atlassian.com/git) .
 
-**1.** If you\'re using the https option, you can copy the EnGene
+**1.** If you\'re using the https option, you can copy the ClusterGene
 version from the GitHub page to your local path: :
 
-    git clone https://github.com/emanuelefalbo/EnGene.git 
+    git clone https://github.com/emanuelefalbo/ClusterGene.git 
 
 
 Cloning with SSH can be done if a SSH protected-key has been added to
 your GitHub profile.
 
-Done! You have the current version of EnGene downloaded locally.
+Done! You have the current version of ClusterGene downloaded locally.
 
 Requirements
 ------------
 
-The EnGene software runs with the python3 language. The following
-packages are required for the correct behaviour of EnGene:
+The ClusterGene software runs with the python3 language. The following
+packages are required for the correct behaviour of ClusterGene:
 
 1.  numpy
 2.  pandas
@@ -64,16 +64,16 @@ packages are required for the correct behaviour of EnGene:
 
 The above packages can be installed by pip. 
 
-Get Started with EnGene
+Get Started with ClusterGene
 =======================
 
 This session gives suggestions about setting up an input file for the
-execution of EnGene.
+execution of ClusterGene.
 
 Manual Page
 -----------
 
-The input files for EnGene are data file (tsv or txt) from gene deletion
+The input files for ClusterGene are data file (tsv or txt) from gene deletion
 experimental scores downloaded from the DepMap portal (e.g.
 depmap\_scores.csv), reference selector cell lines, as well as genomic
 characterization data from the CCLE project. These can be download from
@@ -81,8 +81,8 @@ characterization data from the CCLE project. These can be download from
 
 The help message of python is as follow: :
 
-    home:$ python EnGene.py -h  
-    usage: EnGene.py [-h] -i INPUT -ref REFERENCE -t TISSUE [-m {drop,impute}] [-n N] [-k {centroids,medoids,both}]
+    home:$ python ClusterGene.py -h  
+    usage: ClusterGene.py [-h] -i INPUT -ref REFERENCE -t TISSUE [-m {drop,impute}] [-n N] [-k {centroids,medoids,both}]
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -142,7 +142,7 @@ calculated.
 
 Further analysis on more clusters has not been largely tested.
 
-EnGene firstly performs a clustering on the full CRISPR matrix returning
+ClusterGene firstly performs a clustering on the full CRISPR matrix returning
 the common EG (cEG) and NEG to all cell lines , and the after having
 removed possible outliers with IQR method, it computes the EG and NEG
 spefic for each tissue. The output of the full matrix is reported in an
@@ -175,17 +175,17 @@ the the third and first quartile are removed from the sub-matrices.
 Submission in Local
 -------------------
 
-For example, the submission of a EnGene requires two input files and the
+For example, the submission of a ClusterGene requires two input files and the
 tissue(s) to be investigated. For example, it can be executed in local
 as follows: :
 
-    python EnGene.py -i CRISPRGeneEffect.csv -ref cell-line-selector.csv -t Bone -m impute -n 2 -k centroids  
+    python ClusterGene.py -i CRISPRGeneEffect.csv -ref cell-line-selector.csv -t Bone -m impute -n 2 -k centroids  
 
 where the **CRISPRGeneEffect.csv** containes the CRISPR-Cas9 scores,
 while **cell-line-selector.csv**, whose examplar file is in example folder,  the cell lines corresponding to the
-lineages/tissues chosen. The EnGene software returns as main output a
+lineages/tissues chosen. The ClusterGene software returns as main output a
 **output\_bone.csv** file containing the label for each gene of the
-chosen tissue(s), computed by the chosen algorithm. EnGene searches for
+chosen tissue(s), computed by the chosen algorithm. ClusterGene searches for
 the cell lines in the CRISPRGeneEffect.csv by matching them with those
 from the selected tissue(s) form cell-line-selector.csv file.
 
@@ -195,7 +195,7 @@ will be added.
 
 ### Handling NaN
 
-EnGene handles possible NaN values in input data by performing a
+ClusterGene handles possible NaN values in input data by performing a
 complete removal of all cell lines(columns) containing NaN (-m drop) or
 by executing an imputation using the [k-nearest neighbour
 algorithm](https://scikit-learn.org/stable/modules/generated/sklearn.impute.KNNImputer.html).
